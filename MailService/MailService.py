@@ -4,6 +4,9 @@ from base64 import b64decode
 from time import sleep
 import win11toast
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 imap_user = os.environ["IMAP_USER"]
 imap_pass = os.environ["IMAP_PASS"]
