@@ -18,12 +18,13 @@ imap_host = os.environ["IMAP_HOST"]
 
 imap = imaplib.IMAP4_SSL(imap_host)
 imap.login(imap_user, imap_pass)
-imap.select('Inbox')
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 @eel.expose
 def load_prevmail():
+    imap.select('Inbox', readonly=True)
+
     (retcode, msgnums) = imap.search(None, "(SEEN)")
     assert retcode == "OK"
 
@@ -36,7 +37,7 @@ def load_prevmail():
 
         mail["msgnumber"] = msg
         mail["from"] = message.get("From")
-        mail["date"] = message.get("To")
+        mail["to"] = message.get("To")
 
         mimeSubject = message.get("Subject")
         decodedSubject = email.header.decode_header(mimeSubject)
@@ -49,6 +50,41 @@ def load_prevmail():
         
         mails.append(mail)
     
+    imap.unselect()
+
+    return mails
+
+@eel.expose
+def loadNewMail():
+    imap.select('Inbox', readonly=True)
+
+    (retcode, msgnums) = imap.search(None, "(UNSEEN)")
+    assert retcode == "OK"
+
+    mails = []
+    for msg in  msgnums[0].split():
+        mail = {}
+
+        _, data = imap.fetch(msg, "(RFC822)")
+        message = email.parser.BytesParser().parsebytes(data[0][1])
+
+        mail["msgnumber"] = msg
+        mail["from"] = message.get("From")
+        mail["to"] = message.get("To")
+
+        mimeSubject = message.get("Subject")
+        decodedSubject = email.header.decode_header(mimeSubject)
+        mail["subject"] = str(email.header.make_header(decodedSubject))
+        
+        mail["content"] = ""
+        for part in message.walk():
+            if part.get_content_type() == "text/plain":
+                mail["content"] += part.as_string()
+        
+        mails.append(mail)
+    
+    imap.unselect()
+
     return mails
 
 @eel.expose

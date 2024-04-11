@@ -14,7 +14,6 @@ imap_host = os.environ["IMAP_HOST"]
 
 imap = imaplib.IMAP4_SSL(imap_host)
 imap.login(imap_user, imap_pass)
-imap.select('Inbox')
 
 SEEN = []
 
@@ -22,6 +21,7 @@ def main():
     global imap
 
     while True:
+        imap.select('Inbox')
         (retcode, msgnums) = imap.search(None, "(UNSEEN)")
         print(msgnums)
 
@@ -58,6 +58,7 @@ def main():
             else:
                 print("Already notified abt the mails")
 
+        imap.unselect()
         sleep(10)
 
 try:
