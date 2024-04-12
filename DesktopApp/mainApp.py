@@ -79,10 +79,21 @@ def SearchMail(searchString):
         decodedSubject = email.header.decode_header(mimeSubject)
         mail["subject"] = str(email.header.make_header(decodedSubject))
         
+        mail["minicontent"] = ""
         mail["content"] = ""
+
         for part in message.walk():
             if part.get_content_type() == "text/plain":
-                mail["content"] += part.get_payload(decode=True).decode()
+                mail["minicontent"] += part.get_payload(decode=True).decode()
+            elif part.get_content_type() == "text/html":
+                if not pathlib.Path('./web/userData').exists(): pathlib.Path('./web/userData').mkdir(parents=True)
+                with open(f'./web/userData/{msg.decode()}-mail.html', 'w', encoding='utf-8') as file:
+                    file.write(part.get_payload(decode=True).decode())
+                mail["content"] = f'./userData/{msg.decode()}-mail.html'
+                
+        
+        if mail['content'] == '':
+            mail['textOnly'] = True
         
         mails.append(mail)
     
