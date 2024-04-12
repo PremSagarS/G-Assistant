@@ -72,7 +72,7 @@ function displayNewMail(mailsObject) {
             </div>
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
-                <div class="card-text">${mailObject["content"].replaceAll('\r\n', '<br>')}</div>
+                <div class="embed-responsive" style="height:70vh;"><iframe src="${mailObject["content"]}"  frameborder="0" class="embed-responsive-item" width="100%" height="100%"></iframe></div>
                 <a href="#" class="btn btn-primary">Summary</a>
             </div>
             <div class="card-footer text-body-secondary">
