@@ -55,6 +55,39 @@ def load_prevmail():
     return mails
 
 @eel.expose
+def SearchMail(searchString):
+    imap.select('Inbox', readonly=True)
+
+    (retcode, msgnums) = imap.search(None, "(TEXT %s)" % searchString)
+    assert retcode == "OK"
+
+    mails = []
+    for msg in  msgnums[0].split():
+        mail = {}
+
+        _, data = imap.fetch(msg, "(RFC822)")
+        message = email.parser.BytesParser().parsebytes(data[0][1])
+
+        mail["msgnumber"] = msg
+        mail["from"] = message.get("From")
+        mail["to"] = message.get("To")
+
+        mimeSubject = message.get("Subject")
+        decodedSubject = email.header.decode_header(mimeSubject)
+        mail["subject"] = str(email.header.make_header(decodedSubject))
+        
+        mail["content"] = ""
+        for part in message.walk():
+            if part.get_content_type() == "text/plain":
+                mail["content"] += part.get_payload(decode=True).decode()
+        
+        mails.append(mail)
+    
+    imap.unselect()
+
+    return mails
+
+@eel.expose
 def loadNewMail():
     imap.select('Inbox', readonly=True)
 
@@ -79,7 +112,7 @@ def loadNewMail():
         mail["content"] = ""
         for part in message.walk():
             if part.get_content_type() == "text/plain":
-                mail["content"] += part.as_string()
+                mail["content"] += part.get_payload(decode=True).decode()
         
         mails.append(mail)
     
