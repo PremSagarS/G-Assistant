@@ -71,7 +71,7 @@ function displayNewMail(mailsObject) {
             </div>
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
-                <p class="card-text">${mailObject["content"]}</p>
+                <p class="card-text"><pre>${mailObject["content"]}</pre></p>
                 <a href="#" class="btn btn-primary">Summary</a>
             </div>
             <div class="card-footer text-body-secondary">
