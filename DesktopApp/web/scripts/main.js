@@ -33,8 +33,8 @@ function refresh() {
         </div>
     </div>
     `;
-    eel.load_prevmail()(displayPrevMail);
     eel.loadNewMail()(displayNewMail);
+    eel.load_prevmail()(displayPrevMail);
 }
 
 function mailBarClicked(i) {
@@ -57,6 +57,12 @@ function displayNewMail(mailsObject) {
     for (let i = 0; i < mailsObject.length; i++) {
         let mailObject = mailsObject[i];
 
+        if (mailObject['textOnly'] == true) {
+            mailBody = `<p style='max-height:100%; overflow-y:scroll; text-align:left;'>${mailObject['minicontent'].replaceAll("\r\n", "<br>").replaceAll("\n", "<br>")}</p>`;
+        } else {
+            mailBody = `<iframe src="${mailObject["content"]}"  frameborder="0" class="embed-responsive-item" width="100%" height="100%"></iframe>`;
+        }
+
         newMailsContainer.innerHTML += `
         <div class="row border border-black newMailBar border-2 align-items-center" id = "${i}MsgBar" onclick = 'mailBarClicked(${i});'>
             <div class="col-2 text-truncate" style='margin-top:8px;'>
@@ -72,7 +78,7 @@ function displayNewMail(mailsObject) {
             </div>
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
-                <div class="embed-responsive" style="height:50vh;"><iframe src="${mailObject["content"]}"  frameborder="0" class="embed-responsive-item" width="100%" height="100%"></iframe></div>
+                <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
                 <a href="#" class="btn btn-primary">Summary</a>
             </div>
             <div class="card-footer text-body-secondary">
