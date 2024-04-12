@@ -38,6 +38,7 @@ def load_prevmail():
         mail["msgnumber"] = msg
         mail["from"] = message.get("From")
         mail["to"] = message.get("To")
+        mail["date"] = message.get("Date")
 
         mimeSubject = message.get("Subject")
         decodedSubject = email.header.decode_header(mimeSubject)
@@ -71,6 +72,7 @@ def SearchMail(searchString):
         mail["msgnumber"] = msg
         mail["from"] = message.get("From")
         mail["to"] = message.get("To")
+        mail["date"] = message.get("Date")
 
         mimeSubject = message.get("Subject")
         decodedSubject = email.header.decode_header(mimeSubject)
@@ -104,6 +106,7 @@ def loadNewMail():
         mail["msgnumber"] = msg
         mail["from"] = message.get("From")
         mail["to"] = message.get("To")
+        mail["date"] = message.get("Date")
 
         mimeSubject = message.get("Subject")
         decodedSubject = email.header.decode_header(mimeSubject)
