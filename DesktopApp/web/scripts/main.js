@@ -65,7 +65,7 @@ function displayNewMail(mailsObject) {
                 <b> ${mailObject["subject"]} </b> - ${mailObject["content"]}
             </div>
         </div>
-        <div class="card text-center" style="width: 100%;" id = "${i}MsgContentCard">
+        <div class="card text-center" style="display: none;" id = "${i}MsgContentCard">
             <div class="card-header">
                 ${mailObject["from"]}
             </div>
