@@ -123,11 +123,10 @@ def loadNewMail():
                 if not pathlib.Path('./web/userData').exists(): pathlib.Path('./web/userData').mkdir(parents=True)
                 with open(f'./web/userData/{msg.decode()}-mail.html', 'w', encoding='utf-8') as file:
                     file.write(part.get_payload(decode=True).decode())
-                mail["content"] = f'./web/userData/{msg.decode()}-mail.html'
+                mail["content"] = f'./userData/{msg.decode()}-mail.html'
                 
         
         if mail['content'] == '':
-            mail['content'] = mail['minicontent']
             mail['textOnly'] = True
         
         mails.append(mail)
