@@ -22,6 +22,12 @@ imap.login(imap_user, imap_pass)
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
+"""
+=============================
+        LOADING MAILS
+=============================
+"""
+
 @eel.expose
 def load_prevmail():
     imap.select('Inbox', readonly=True)
@@ -145,6 +151,13 @@ def loadNewMail():
     imap.unselect()
 
     return mails
+
+
+"""
+=============================
+        CLOSE PYTHON
+=============================
+"""
 
 @eel.expose
 def close_python(page, sockets_still_open):
