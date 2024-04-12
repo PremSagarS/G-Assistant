@@ -56,13 +56,14 @@ function displayNewMail(mailsObject) {
     newMailsContainer.innerHTML = '';
     for (let i = 0; i < mailsObject.length; i++) {
         let mailObject = mailsObject[i];
+
         newMailsContainer.innerHTML += `
         <div class="row border border-black newMailBar border-2 align-items-center" id = "${i}MsgBar" onclick = 'mailBarClicked(${i});'>
             <div class="col-2 text-truncate" style='margin-top:8px;'>
                 <p class="h5">${mailObject["from"]}</p>
             </div>
             <div class="col-10 text-truncate" style='text-align:left;'>
-                <b> ${mailObject["subject"]} </b> - ${mailObject["content"]}
+                <b> ${mailObject["subject"]} </b> - ${mailObject["minicontent"]}
             </div>
         </div>
         <div class="card text-center" style="display: none;" id = "${i}MsgContentCard">
@@ -71,7 +72,7 @@ function displayNewMail(mailsObject) {
             </div>
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
-                <p class="card-text"><pre>${mailObject["content"]}</pre></p>
+                <div class="card-text">${mailObject["content"].replaceAll('\r\n', '<br>')}</div>
                 <a href="#" class="btn btn-primary">Summary</a>
             </div>
             <div class="card-footer text-body-secondary">

@@ -9,6 +9,7 @@ import imaplib
 import email
 import email.parser
 import email.header
+from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -112,10 +113,19 @@ def loadNewMail():
         decodedSubject = email.header.decode_header(mimeSubject)
         mail["subject"] = str(email.header.make_header(decodedSubject))
         
+        mail["minicontent"] = ""
         mail["content"] = ""
+
         for part in message.walk():
             if part.get_content_type() == "text/plain":
-                mail["content"] += part.get_payload(decode=True).decode()
+                mail["minicontent"] += part.get_payload(decode=True).decode()
+            elif part.get_content_type() == "text/html":
+                mail["content"] += BeautifulSoup(part.get_payload(decode=True).decode(), 'html.parser').prettify()
+                
+        
+        if mail['content'] == '':
+            mail['content'] = mail['minicontent']
+            mail['textOnly'] = True
         
         mails.append(mail)
     
