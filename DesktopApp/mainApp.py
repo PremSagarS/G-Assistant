@@ -244,5 +244,36 @@ def testPrompt():
     
     return outString
 
+"""
+=============================
+            NOTES 
+=============================
+"""
+
+@eel.expose
+def fetchNotes():
+    if not pathlib.Path('./web/userData/notes').exists():
+        return []
+    return pickle.load(open('./web/userData/notes', 'rb'))
+
+@eel.expose
+def saveNote(noteTitle, noteText):
+    if not pathlib.Path('./web/userData/notes').exists():
+        file = open('./web/userData/notes', 'wb')
+        pickle.dump([], file)
+        file.close()
+    
+    file = open('./web/userData/notes', 'rb')
+    notesArray = pickle.load(file)
+    file.close()
+
+    notesArray.append({
+        'title': noteTitle,
+        'text': noteText,
+    })
+
+    file = open('./web/userData/notes', 'wb')
+    pickle.dump(notesArray, file)
+
 eel.init('web')
 eel.start('main.html')

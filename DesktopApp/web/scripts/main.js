@@ -1,6 +1,7 @@
 window.addEventListener("beforeunload", () => { eel.close_python })
 
 let mails;
+let notes;
 
 window.onload = function () {
     refresh();
@@ -56,6 +57,8 @@ function displayMail(mailsObject) {
     mails = mailsObject;
     console.log(mails);
     newMailsContainer = document.getElementById("newMailsContainer");
+    newMailsContainer.classList.add('vstack');
+    newMailsContainer.classList.remove('hstack');
     newMailsContainer.innerHTML = '';
     for (let i = 0; i < mailsObject.length; i++) {
         let mailObject = mailsObject[i];
@@ -140,6 +143,35 @@ function summarizeMail(emailIndex) {
 
     textContent = mails[emailIndex]['minicontent'];
     eel.summarizeEmail(textContent)(function (summaryText) {
-        modalContent.innerHTML = summaryText;
+        modalTitle.innerHTML = mails[emailIndex]['subject'];
+        modalContent.innerHTML = `<textarea class="form-control" style='height:40vh;' id='modaltextarea'>${summaryText}</textarea>`;
+    });
+}
+
+function saveNote() {
+    noteTitle = document.getElementById('summaryModalTitle').innerHTML;
+    noteText = document.getElementById('modaltextarea').value;
+    eel.saveNote(noteTitle, noteText);
+}
+
+function fetchNotes() {
+    eel.fetchNotes()(function (notesArray) {
+        notes = notesArray;
+        notesContainer = document.getElementById("newMailsContainer");
+        notesContainer.innerHTML = '';
+        notesContainer.classList.remove('vstack');
+        notesContainer.classList.add('hstack');
+
+        for (let i = 0; i < notesArray.length; i++) {
+            noteObject = notesArray[i];
+            notesContainer.innerHTML += `
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">${noteObject['title']}</h5>
+                    <p class="card-text">${noteObject['text']}</p>
+                </div>
+            </div>
+            `;
+        }
     });
 }

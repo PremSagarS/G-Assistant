@@ -46,9 +46,13 @@
                 <buttun class="btn btn-primary" onclick="fetchPreviousMail();">
                     Previous Mail
                 </buttun>
-                <buttun class="btn btn-primary" onclick="fetchSavedMail();">
+                <button class="btn btn-primary" onclick="fetchSavedMail();">
                     Saved Mail
-                </buttun>
+                </button>
+                <hr>
+                <button class="btn btn-primary" onclick="fetchNotes();">
+                    Notes
+                </button>
             </div>
         </div>
         <div class="column align-items-center justify-content-center">
@@ -84,7 +88,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNote();">Save Note</button>
                 </div>
             </div>
         </div>
