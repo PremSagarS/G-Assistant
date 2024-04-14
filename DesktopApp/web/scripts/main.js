@@ -81,7 +81,7 @@ function displayMail(mailsObject) {
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
                 <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
-                <button class="btn btn-primary" style="margin-top:3px;">Summary</button>
+                <button class="btn btn-primary" style="margin-top:3 px;">Summary</button>
             </div>
             <div class="card-footer text-body-secondary">
                 ${mailObject["date"]}
