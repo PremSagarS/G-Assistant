@@ -53,7 +53,8 @@ function displayToggle(element) {
 }
 
 function displayMail(mailsObject) {
-    console.log(mailsObject);
+    mails = mailsObject;
+    console.log(mails);
     newMailsContainer = document.getElementById("newMailsContainer");
     newMailsContainer.innerHTML = '';
     for (let i = 0; i < mailsObject.length; i++) {
@@ -66,11 +67,11 @@ function displayMail(mailsObject) {
         }
 
         newMailsContainer.innerHTML += `
-        <div class="row border border-black newMailBar border-2 align-items-center" id = "${i}MsgBar" onclick = 'mailBarClicked(${i});'>
+        <div class="row border border-black newMailBar border-2 align-items-center justify-content-between" id = "${i}MsgBar" onclick = 'mailBarClicked(${i});'>
             <div class="col-2 text-truncate" style='margin-top:8px;'>
                 <p class="h5">${mailObject["from"]}</p>
             </div>
-            <div class="col-10 text-truncate" style='text-align:left;'>
+            <div class="col-8 text-truncate" style='text-align:left;'>
                 <b> ${mailObject["subject"]} </b> - ${mailObject["minicontent"]}
             </div>
         </div>
@@ -81,7 +82,30 @@ function displayMail(mailsObject) {
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
                 <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
-                <button class="btn btn-primary" style="margin-top:3 px;">Summary</button>
+                <div style="display:flex; justify-content:space-between; width:100%;">
+                    <div style="display:flex;column-gap:3px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;">
+                            Meet
+                        </button>
+                        <button class="btn btn-primary" style="margin-top: 5px;">
+                            Maps
+                        </button>
+                        <button class="btn btn-primary" style="margin-top: 5px;">
+                            Calendar
+                        </button>
+                        <button class="btn btn-primary" style="margin-top: 5px;">
+                            Summary
+                        </button>
+                    </div>
+                    <div style="display:flex;column-gap:3px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${i});">
+                            Save
+                        </button>
+                        <button class="btn btn-danger" style="margin-top: 5px;">
+                            Delete
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card-footer text-body-secondary">
                 ${mailObject["date"]}
@@ -89,4 +113,12 @@ function displayMail(mailsObject) {
         </div>
         `
     }
+}
+
+function saveMail(mailIdx) {
+    eel.saveMail(mails[mailIdx]);
+}
+
+function fetchSavedMail() {
+    eel.fetchSavedMail()(displayMail);
 }

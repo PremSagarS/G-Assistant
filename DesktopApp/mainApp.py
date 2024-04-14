@@ -10,6 +10,9 @@ import email
 import email.parser
 import email.header
 from bs4 import BeautifulSoup
+import pickle
+import uuid
+import shutil
 
 load_dotenv()
 
@@ -27,6 +30,35 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
         LOADING MAILS
 =============================
 """
+
+@eel.expose
+def fetchSavedMail():
+    with open('./web/userData/newData', 'rb') as file:
+        mailsObject = pickle.load(file)
+        return mailsObject
+
+@eel.expose()
+def saveMail(mailObject):
+    uuidId = str(uuid.uuid4())
+    oldcontentPath = pathlib.Path('./web').joinpath(pathlib.Path(mailObject['content']))
+    newContentPath = pathlib.Path(f'./web/userData/{uuidId}.html')
+
+    shutil.copyfile(oldcontentPath, newContentPath)
+    mailObject['content'] = f'./userData/{uuidId}.html'
+
+    if not pathlib.Path("./web/userData/newData").exists():
+        file = open('./web/userData/newData', 'wb')
+        pickle.dump([mailObject], file)
+        file.close()
+        return
+
+    file = open('./web/userData/newData', 'rb')
+    mailsObject = pickle.load(file)
+    mailsObject.append(mailObject)
+    file.close()
+    
+    file = open('./web/userData/newData', 'wb')
+    pickle.dump(mailsObject, file)    
 
 @eel.expose
 def load_prevmail():
