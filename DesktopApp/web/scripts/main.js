@@ -2,8 +2,24 @@ window.addEventListener("beforeunload", () => { eel.close_python })
 
 let mails;
 let notes;
+let map;
 
 window.onload = function () {
+    map = L.map('map').setView([12.8406, 80.1534], 20);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var stuSplit = L.latLng(12.8406, 80.1534);
+    var myMarker = L.marker(stuSplit,
+        { title: 'unselected' })
+        .addTo(map);
+
+    myModal = document.getElementById('mapModal');
+    myModal.addEventListener('shown.bs.modal', event => {
+        map.invalidateSize();
+    });
+
     refresh();
 };
 
