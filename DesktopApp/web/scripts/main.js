@@ -93,7 +93,7 @@ function displayMail(mailsObject) {
                         <button class="btn btn-primary" style="margin-top: 5px;">
                             Calendar
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="summarizeMail(${i});">
                             Summary
                         </button>
                     </div>
@@ -121,4 +121,25 @@ function saveMail(mailIdx) {
 
 function fetchSavedMail() {
     eel.fetchSavedMail()(displayMail);
+}
+
+function summarizeMail(emailIndex) {
+    myModalElement = document.getElementById('summaryModal');
+    modalTitle = document.getElementById('summaryModalTitle');
+    modalContent = document.getElementById('summaryModalContent');
+    myModal = new bootstrap.Modal(document.getElementById('summaryModal'));
+
+    modalContent.innerHTML = `
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>`;
+
+    myModal.show();
+
+    textContent = mails[emailIndex]['minicontent'];
+    eel.summarizeEmail(textContent)(function (summaryText) {
+        modalContent.innerHTML = summaryText;
+    });
 }

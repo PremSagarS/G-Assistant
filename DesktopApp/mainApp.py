@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 import pickle
 import uuid
 import shutil
+import llmmodule
 
 load_dotenv()
 
@@ -210,6 +211,16 @@ def saveMail(mailObject):
 @eel.expose
 def close_python(page, sockets_still_open):
     sys.exit(0)
+
+"""
+=======================
+        LLM
+=======================
+"""
+
+@eel.expose
+def summarizeEmail(text):
+    return llmmodule.summarizeThis(text)[0]['summary_text']
 
 @eel.expose
 def testPrompt():
