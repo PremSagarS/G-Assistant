@@ -29,7 +29,7 @@
 
         #map {
             height: 50vh;
-            width: 50vw;
+            width: 100%;
         }
 
         .newMailBar:hover {
@@ -109,8 +109,17 @@
     <div class="modal fade" tabindex="-1" id="mapModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div id="map">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Title
+                    </h5>
+                </div>
+                <div id="map" class="modal-body">
 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Google Map</button>
                 </div>
             </div>
         </div>
