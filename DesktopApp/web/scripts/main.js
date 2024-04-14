@@ -14,7 +14,7 @@ function SearchMail() {
         </div>
     </div>`;
     let searchString = document.getElementById("MailSearchTextBox").value;
-    eel.SearchMail(searchString)(displayNewMail);
+    eel.SearchMail(searchString)(displayMail);
 
     return false;
 }
@@ -26,15 +26,17 @@ function refresh() {
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>`;
-    document.getElementById("buttonsContainer").innerHTML = `
+    eel.loadNewMail()(displayMail);
+}
+
+function fetchPreviousMail() {
+    document.getElementById("newMailsContainer").innerHTML = `
     <div class="text-center">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-    </div>
-    `;
-    eel.loadNewMail()(displayNewMail);
-    eel.load_prevmail()(displayPrevMail);
+    </div>`;
+    eel.load_prevmail()(displayMail);
 }
 
 function mailBarClicked(i) {
@@ -50,7 +52,7 @@ function displayToggle(element) {
     }
 }
 
-function displayNewMail(mailsObject) {
+function displayMail(mailsObject) {
     console.log(mailsObject);
     newMailsContainer = document.getElementById("newMailsContainer");
     newMailsContainer.innerHTML = '';
@@ -79,26 +81,12 @@ function displayNewMail(mailsObject) {
             <div class="card-body">
                 <h5 class="card-title">${mailObject["subject"]}</h5>
                 <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
-                <a href="#" class="btn btn-primary">Summary</a>
+                <button class="btn btn-primary" style="margin-top:3px;">Summary</button>
             </div>
             <div class="card-footer text-body-secondary">
                 ${mailObject["date"]}
             </div>
         </div>
-        `
-    }
-}
-
-function displayPrevMail(mailsObject) {
-    mails = mailsObject;
-    buttonsContainer = document.getElementById("buttonsContainer");
-    buttonsContainer.innerHTML = '';
-    for (let i = 0; i < mailsObject.length; i++) {
-        let mailObject = mailsObject[i];
-        buttonsContainer.innerHTML += `
-        <button class='btn btn-primary text-truncate' style='margin-bottom:5px;'>
-            ${mailObject['subject']}
-        </button>
         `
     }
 }
