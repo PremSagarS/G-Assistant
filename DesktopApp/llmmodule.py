@@ -1,22 +1,61 @@
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 from langchain_community.llms import HuggingFacePipeline
 from langchain_experimental.llms import JsonFormer
+from dotenv import load_dotenv
+import json
+import os
 
+load_dotenv()
+debugging = os.environ["DEBUGGING"]
+
+if not debugging == "TRUE":
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    hf_model = pipeline("text-generation", model="microsoft/phi-1_5", max_new_tokens = 70)
+    hfpipeline = HuggingFacePipeline(pipeline=hf_model)
+
+
+# Lines below are probably outdated now
 # model = AutoModelForCausalLM.from_pretrained("CobraMamba/mamba-gpt-3b-v4")
 # tokenizer = AutoTokenizer.from_pretrained("CobraMamba/mamba-gpt-3b-v4")
 
-json_schema = {
-    "type": "object",
-    "properties": {
-        "eventname": {"type": "string"},
-        "location": {"type": "string"},
-        "date": {"type": "string"},
-    }
-}
+def summarizeThis(text):
+    if debugging == "TRUE":
+        return [
+            {
+                "summary_text": "The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building. Its base is square, measuring 125 metres (410 ft) on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world."
+            }
+        ]
 
-# summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-# def summarizeThis(text):
-#     return (summarizer(text, max_length=100))
+    return (summarizer(text, max_length=100))
+
+def jsonExtractor(emailText):
+    if debugging == "TRUE":
+        return {"eventname": "GenAIHackathon", "date": "19-04-2024", "location": "MG Auditorium"}
+
+    PROMPT=f"""You must respond using JSON format.
+Extract details of an event from given body of text
+
+{JSON_SCHEMA}
+
+EXAMPLES
+--------
+{TRAINING_EXAMPLE}
+
+BEGIN! Extract event data
+--------
+Mail: {emailText}
+Data:"""
+    text = hfpipeline.invoke(PROMPT, stop=["Mail:","Data:", "Email:", "--------", "}"])
+    text = str(text)
+    
+    # MODEL SPECIFIC TEXT PROCESSING
+    text = text[:text.find('Email:')]
+    
+    # TEXT PROCESSING
+    text = (text[text.rfind('{'): text.rfind('}') + 1])
+    text = text.replace("\n","").replace("\r\n","")
+    return (json.loads(text))
+
 
 """
 ========================================
@@ -43,18 +82,27 @@ Her eighth husband, Rashid Rajput, was deported in 2006 to his native Pakistan a
 If convicted, Barrientos faces up to four years in prison.  Her next court appearance is scheduled for May 18.
 """
 
+JSON_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "eventname": {"type": "string"},
+        "location": {"type": "string"},
+        "date": {"type": "string"},
+    }
+}
+
 TRAINING_EXAMPLE = """
 Text: I would like to invite you to Workshop on iOS Development at MG Auditorium on 21st May 2024
 Data: {
     "eventname": "Workshop on iOS Development",
     "date": "21-05-2024",
-    "location":"MG Auditorium",
+    "location":"MG Auditorium"
 }
 Text: Students please attend SAP Hackathon on 22nd MAY 2025 at Kasturba Gandhi auditorium
 Data: {
     "eventname": "SAP Hackathon",
     "date": "22-05-2024",
-    "location":"Kasturba Gandhi auditorium",
+    "location":"Kasturba Gandhi auditorium"
 }
 """
 
@@ -65,7 +113,7 @@ event name: GenAIHackathon at MG Auditorium on 19th April 2024
 EXAMPLE_PROMPT = f"""You must respond using JSON format.
 Extract details of an event from given body of text
 
-{json_schema}
+{JSON_SCHEMA}
 
 EXAMPLES
 --------
@@ -77,9 +125,5 @@ Mail: {EMAIL_EXAMPLE}
 Data:"""
 
 if __name__ == "__main__":
-    # print(summarizeThis(ARTICLE))
-    hf_model = pipeline("text-generation", model="microsoft/phi-1_5", max_new_tokens = 50)
-    print(HuggingFacePipeline(pipeline=hf_model).invoke(EXAMPLE_PROMPT, stop=["Mail:","Data:", "Email:", "--------", "}"]))
-    # json_former = JsonFormer(json_schema=json_schema, pipeline=hf_model)
-    # results = json_former.predict(EXAMPLE_PROMPT, stop=["Mail:","Data:"])
-    # print(results)
+    print(jsonExtractor(EMAIL_EXAMPLE))
+    print(summarizeThis(ARTICLE))
