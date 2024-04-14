@@ -154,6 +154,12 @@ function saveNote() {
     eel.saveNote(noteTitle, noteText);
 }
 
+function deleteNote(noteIndex) {
+    noteTitle = notes[noteIndex]['title'];
+    noteText = notes[noteIndex]['text'];
+    eel.deleteNote(noteText, noteTitle)(fetchNotes);
+}
+
 function fetchNotes() {
     eel.fetchNotes()(function (notesArray) {
         notes = notesArray;
@@ -169,6 +175,9 @@ function fetchNotes() {
                 <div class="card-body">
                     <h5 class="card-title">${noteObject['title']}</h5>
                     <p class="card-text">${noteObject['text']}</p>
+                    <button class="btn btn-danger" onclick="deleteNote(${i});">
+                        Delete
+                    </button>
                 </div>
             </div>
             `;

@@ -274,6 +274,22 @@ def saveNote(noteTitle, noteText):
 
     file = open('./web/userData/notes', 'wb')
     pickle.dump(notesArray, file)
+    file.close()
+
+@eel.expose
+def deleteNote(noteText, noteTitle):
+    file = open('./web/userData/notes', 'rb')
+    notesArray = pickle.load(file)
+    file.close()
+
+    notesArray.remove({
+        'title': noteTitle,
+        'text': noteText,
+    })
+
+    file = open('./web/userData/notes', 'wb')
+    pickle.dump(notesArray, file)
+    file.close()
 
 eel.init('web')
 eel.start('main.html')
