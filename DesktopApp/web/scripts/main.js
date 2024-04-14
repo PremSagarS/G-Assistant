@@ -53,6 +53,18 @@ function displayToggle(element) {
     }
 }
 
+function markAsRead(i) {
+    eel.markAsRead(mails[i]['msgnumber']);
+    mails.splice(i, 1);
+    displayMail(mails);
+}
+
+function deleteMail(i) {
+    eel.deleteMail(mails[i]['msgnumber']);
+    mails.splice(i, 1);
+    displayMail(mails);
+}
+
 function displayMail(mailsObject) {
     mails = mailsObject;
     console.log(mails);
@@ -104,7 +116,10 @@ function displayMail(mailsObject) {
                         <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${i});">
                             Save
                         </button>
-                        <button class="btn btn-danger" style="margin-top: 5px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="markAsRead(${i});">
+                            Mark As Read
+                        </button>
+                        <button class="btn btn-danger" style="margin-top: 5px;" onclick="deleteMail(${i});">
                             Delete
                         </button>
                     </div>

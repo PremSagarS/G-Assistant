@@ -136,7 +136,7 @@ def loadNewMail():
         _, data = imap.fetch(msg, "(RFC822)")
         message = email.parser.BytesParser().parsebytes(data[0][1])
 
-        mail["msgnumber"] = msg
+        mail["msgnumber"] = msg.decode('utf-8')
         mail["from"] = message.get("From")
         mail["to"] = message.get("To")
         mail["date"] = message.get("Date")
@@ -166,6 +166,25 @@ def loadNewMail():
     imap.unselect()
 
     return mails
+
+"""
+============================
+        MODIFY MAILS
+============================
+"""
+
+@eel.expose
+def markAsRead(msgnumber):
+    imap.select('Inbox')
+    imap.store(msgnumber, '+FLAGS','\Seen')
+    imap.unselect()
+
+@eel.expose
+def deleteMail(msgnumber):
+    imap.select('Inbox')
+    imap.store(msgnumber, '+FLAGS', '\\Deleted')
+    imap.expunge()
+    imap.unselect()
 
 """
 ============================
