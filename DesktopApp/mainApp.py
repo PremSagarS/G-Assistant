@@ -14,6 +14,8 @@ import pickle
 import uuid
 import shutil
 import llmmodule
+from OSMPythonTools.nominatim import Nominatim
+nominatim = Nominatim()
 
 load_dotenv()
 
@@ -240,6 +242,22 @@ def close_python(page, sockets_still_open):
 @eel.expose
 def summarizeEmail(text):
     return llmmodule.summarizeThis(text)[0]['summary_text']
+
+@eel.expose
+def getJsonData(text):
+    return llmmodule.jsonExtractor(text)
+
+@eel.expose
+def getLocationLatLong(text):
+    location = getJsonData(text)['location']
+    data = nominatim.query(location)
+    jsonData = data.toJSON()
+    returnData = [
+        jsonData[0]['lat'],
+        jsonData[0]['lon'],
+        jsonData[0]['display_name']
+    ]
+    return returnData
 
 @eel.expose
 def testPrompt():

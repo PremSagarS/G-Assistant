@@ -5,7 +5,7 @@ let notes;
 let map;
 
 window.onload = function () {
-    map = L.map('map').setView([12.8406, 80.1534], 20);
+    map = L.map('map').setView([12.8406, 80.1534], 13);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -118,7 +118,7 @@ function displayMail(mailsObject) {
                         <button class="btn btn-primary" style="margin-top: 5px;">
                             Meet
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="openMap(${i});">
                             Maps
                         </button>
                         <button class="btn btn-primary" style="margin-top: 5px;">
@@ -213,5 +213,23 @@ function fetchNotes() {
             </div>
             `;
         }
+    });
+}
+
+function openMap(emailIndex) {
+    emailObject = mails[emailIndex];
+    emailText = emailObject['minicontent'];
+
+    mapModalTitle = document.getElementById('mapModalTitle');
+
+    eel.getLocationLatLong(emailText)(function (coords) {
+        mapModalElement = document.getElementById('mapModal');
+        mapModal = new bootstrap.Modal(mapModalElement);
+        mapModal.show();
+
+        mapModalTitle.innerHTML = coords[2];
+
+        map.flyTo([coords[0], coords[1]]);
+        map.invalidateSize();
     });
 }
