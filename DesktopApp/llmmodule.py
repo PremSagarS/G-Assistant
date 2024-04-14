@@ -1,10 +1,9 @@
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
-from jsonformer import Jsonformer
+from langchain_community.llms import HuggingFacePipeline
+from langchain_experimental.llms import JsonFormer
 
-# databricks/dolly-v1-6b
-
-model = AutoModelForCausalLM.from_pretrained("Open-Orca/Mistral-7B-OpenOrca", device_map = "cuda")
-tokenizer = AutoTokenizer()
+# model = AutoModelForCausalLM.from_pretrained("CobraMamba/mamba-gpt-3b-v4")
+# tokenizer = AutoTokenizer.from_pretrained("CobraMamba/mamba-gpt-3b-v4")
 
 json_schema = {
     "type": "object",
@@ -16,17 +15,8 @@ json_schema = {
 }
 
 # summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-
-def getEmailData(emailContent):
-    prompt = f"""Extract event details and respond in the following JSON schema: \n {json_schema} \n Example DATA: \n {TRAINING_EXAMPLE} \n Now generate similar JSON for the following mail: \n {emailContent}"""
-    print(prompt)
-    jsonformer = Jsonformer(model, tokenizer, json_schema, prompt)
-    generated_data = jsonformer()
-
-    return (generated_data)
-
-def summarizeThis(text):
-    return (summarizer(text, max_length=100))
+# def summarizeThis(text):
+#     return (summarizer(text, max_length=100))
 
 """
 ========================================
@@ -54,14 +44,14 @@ If convicted, Barrientos faces up to four years in prison.  Her next court appea
 """
 
 TRAINING_EXAMPLE = """
-Mail: I would like to invite you to Workshop on iOS Development at MG Auditorium on 21st May 2024
-Response: {
+Text: I would like to invite you to Workshop on iOS Development at MG Auditorium on 21st May 2024
+Data: {
     "eventname": "Workshop on iOS Development",
     "date": "21-05-2024",
     "location":"MG Auditorium",
 }
-Mail: Students please attend SAP Hackathon on 22nd MAY 2025 at Kasturba Gandhi auditorium
-Response: {
+Text: Students please attend SAP Hackathon on 22nd MAY 2025 at Kasturba Gandhi auditorium
+Data: {
     "eventname": "SAP Hackathon",
     "date": "22-05-2024",
     "location":"Kasturba Gandhi auditorium",
@@ -72,6 +62,24 @@ EMAIL_EXAMPLE = """
 event name: GenAIHackathon at MG Auditorium on 19th April 2024
 """
 
+EXAMPLE_PROMPT = f"""You must respond using JSON format.
+Extract details of an event from given body of text
+
+{json_schema}
+
+EXAMPLES
+--------
+{TRAINING_EXAMPLE}
+
+BEGIN! Extract event data
+--------
+Mail: {EMAIL_EXAMPLE}
+Data:"""
+
 if __name__ == "__main__":
     # print(summarizeThis(ARTICLE))
-    print(getEmailData(EMAIL_EXAMPLE))
+    hf_model = pipeline("text-generation", model="microsoft/phi-1_5", max_new_tokens = 50)
+    print(HuggingFacePipeline(pipeline=hf_model).invoke(EXAMPLE_PROMPT, stop=["Mail:","Data:", "Email:", "--------", "}"]))
+    # json_former = JsonFormer(json_schema=json_schema, pipeline=hf_model)
+    # results = json_former.predict(EXAMPLE_PROMPT, stop=["Mail:","Data:"])
+    # print(results)
