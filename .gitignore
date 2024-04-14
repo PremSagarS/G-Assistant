@@ -2,3 +2,4 @@
 .env
 userData/
 logs.txt
+__pycache__/
