@@ -89,7 +89,7 @@ function displayMail(mailsObject) {
     newMailsContainer.classList.remove('hstack');
     newMailsContainer.innerHTML = '';
     for (let i = 0; i < mailsObject.length; i++) {
-        let mailObject = mailsObject[i];
+        let mailObject = mailsObject[mailsObject.length - i - 1];
 
         if (mailObject['textOnly'] == true) {
             mailBody = `<p style='max-height:100%; overflow-y:scroll; text-align:left;'>${mailObject['minicontent'].replaceAll("\r\n", "<br>").replaceAll("\n", "<br>")}</p>`;
