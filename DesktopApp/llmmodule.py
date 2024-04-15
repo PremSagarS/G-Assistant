@@ -6,9 +6,9 @@ import json
 import os
 
 load_dotenv()
-debugging = os.environ["DEBUGGING"]
+workMode = os.environ["WORK_MODE"]
 
-if not debugging == "TRUE":
+if workMode == "LOCAL_LLM":
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
     hf_model = pipeline("text-generation", model="microsoft/phi-1_5", max_new_tokens = 70)
     hfpipeline = HuggingFacePipeline(pipeline=hf_model)
@@ -19,7 +19,7 @@ if not debugging == "TRUE":
 # tokenizer = AutoTokenizer.from_pretrained("CobraMamba/mamba-gpt-3b-v4")
 
 def summarizeThis(text):
-    if debugging == "TRUE":
+    if workMode == "DEBUGGING":
         return [
             {
                 "summary_text": "The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building. Its base is square, measuring 125 metres (410 ft) on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world."
@@ -29,7 +29,7 @@ def summarizeThis(text):
     return (summarizer(text, max_length=100))
 
 def jsonExtractor(emailText):
-    if debugging == "TRUE":
+    if workMode == "DEBUGGING":
         return {"eventname": "GenAIHackathon", "date": "19-04-2024", "location": "MG Auditorium"}
 
     PROMPT=f"""You must respond using JSON format.
