@@ -241,7 +241,7 @@ def close_python(page, sockets_still_open):
 
 @eel.expose
 def summarizeEmail(text):
-    return llmmodule.summarizeThis(text)[0]['summary_text']
+    return llmmodule.summarizeThis(text)
 
 @eel.expose
 def getJsonData(text):
@@ -252,6 +252,11 @@ def getLocationLatLong(text):
     location = getJsonData(text)['location']
     data = nominatim.query(location)
     jsonData = data.toJSON()
+    if jsonData == []:
+        return [
+            0,0,
+            f"Could not find a location. Sorry! Nominatim couldn't find the {location}"
+        ]
     returnData = [
         jsonData[0]['lat'],
         jsonData[0]['lon'],

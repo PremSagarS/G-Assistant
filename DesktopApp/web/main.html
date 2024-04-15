@@ -47,7 +47,7 @@
             class="card">
             <img src="./images/mail.jpg" alt="Mail.jpg">
             <p class="h4" style="color: darkgray;">G-Assistant</p>
-            <p style="font-weight: bolder;">Previous mails</p>
+            <p style="font-weight: bolder;">Mails</p>
             <div id="buttonsContainer"
                 style="display: flex; row-gap: 5px; flex-direction: column; justify-content: center;">
                 <button class="btn btn-primary" onclick="refresh();">
@@ -60,6 +60,7 @@
                     Saved Mail
                 </button>
                 <hr>
+                <p style="font-weight: bolder;">Notes</p>
                 <button class="btn btn-primary" onclick="fetchNotes();">
                     Notes
                 </button>
@@ -68,8 +69,6 @@
         <div class="column align-items-center justify-content-center">
             <nav class="navbar bg-body-tertiary" style="margin-bottom: 50px;">
                 <div class="container-fluid justify-content-center">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mapModal"
-                        onclick="map.invalidateSize();">Map</button>
                     <button class="btn btn-primary" style="margin-right: 10px;" onclick="refresh();"> Refresh </button>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"

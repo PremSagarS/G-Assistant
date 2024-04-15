@@ -15,7 +15,7 @@ def getPromptResponse(prompt):
             "Authorization": f"Bearer {key}",
         },
         data=json.dumps({
-            "model":"nousresearch/nous-capybara-7b:free",
+            "model":"mistralai/mistral-7b-instruct:free",
             "messages":[
                 {"role": "user", "content": f"{prompt}"},
             ],

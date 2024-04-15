@@ -21,16 +21,12 @@ if workMode == "LOCAL_LLM":
 
 def summarizeThis(text):
     if workMode == "DEBUGGING":
-        return [
-            {
-                "summary_text": "The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building. Its base is square, measuring 125 metres (410 ft) on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world."
-            }
-        ]
+        return "The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building. Its base is square, measuring 125 metres (410 ft) on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world."
     elif workMode == "LOCAL_LLM":
-        return (summarizer(text, max_length=100))
+        return (summarizer(text, max_length=100))[0]['summary_text']
     
     elif workMode == "OPENROUTERS":
-        return openRoutersLLM.getPromptResponse(f"Summarize this text in less than 50 words: {text}")
+        return openRoutersLLM.getPromptResponse(f"Tell me what this email sent to me is about in less than 100 words: {text}")['choices'][0]['message']['content']
 
 def jsonExtractor(emailText):
     if workMode == "DEBUGGING":
@@ -73,7 +69,11 @@ BEGIN! Extract event data
 Mail: {emailText}
 Data:"""
         responseJson = openRoutersLLM.getPromptResponse(PROMPT)
-        return json.loads(responseJson['choices'][0]['message']['content'].strip().replace('\n',''))
+        print(responseJson['choices'][0]['message']['content'])
+        possibleJsonData = responseJson['choices'][0]['message']['content'].strip().replace('\n','')
+        possibleJsonData = (possibleJsonData[possibleJsonData.rfind('{'): possibleJsonData.rfind('}') + 1])
+        print("POSSIBLE JSON DATA\n\n", json.loads(possibleJsonData))
+        return json.loads(possibleJsonData)
 
 
 """
@@ -112,17 +112,9 @@ JSON_SCHEMA = {
 
 TRAINING_EXAMPLE = """
 Text: I would like to invite you to Workshop on iOS Development at MG Auditorium on 21st May 2024
-Data: {
-    "eventname": "Workshop on iOS Development",
-    "date": "21-05-2024",
-    "location":"MG Auditorium"
-}
+JSON: {"eventname":"Workshop on iOS Development","date":"21-05-2024","location":"MG Auditorium"}
 Text: Students please attend SAP Hackathon on 22nd MAY 2025 at Kasturba Gandhi auditorium
-Data: {
-    "eventname": "SAP Hackathon",
-    "date": "22-05-2024",
-    "location":"Kasturba Gandhi auditorium"
-}
+JSON: {"eventname":"SAP Hackathon","date":"22-05-2024","location":"Kasturba Gandhi auditorium"}
 """
 
 EMAIL_EXAMPLE = """
@@ -138,10 +130,10 @@ EXAMPLES
 --------
 {TRAINING_EXAMPLE}
 
-BEGIN! Extract event data
+Now Extract event data as JSON for the following email:
 --------
 Mail: {EMAIL_EXAMPLE}
-Data:"""
+JSON:"""
 
 if __name__ == "__main__":
     print("Work Mode: ", workMode)
