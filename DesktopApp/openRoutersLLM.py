@@ -3,7 +3,6 @@ import json
 import os
 from dotenv import load_dotenv
 from pprint import pprint
-from llmmodule import ARTICLE, EMAIL_EXAMPLE, TRAINING_EXAMPLE
 
 load_dotenv()
 
@@ -53,6 +52,7 @@ def fetchPerRequestLimits():
     return jsonData
 
 if __name__ == '__main__':
+    from llmmodule import ARTICLE, EMAIL_EXAMPLE, TRAINING_EXAMPLE
     EXAMPLE_PROMPT=f"""You must respond using JSON format.
 Extract details of an event from given body of text
 EXAMPLES

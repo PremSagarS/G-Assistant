@@ -4,6 +4,7 @@ from langchain_experimental.llms import JsonFormer
 from dotenv import load_dotenv
 import json
 import os
+import openRoutersLLM
 
 load_dotenv()
 workMode = os.environ["WORK_MODE"]
@@ -25,14 +26,18 @@ def summarizeThis(text):
                 "summary_text": "The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building. Its base is square, measuring 125 metres (410 ft) on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world."
             }
         ]
-
-    return (summarizer(text, max_length=100))
+    elif workMode == "LOCAL_LLM":
+        return (summarizer(text, max_length=100))
+    
+    elif workMode == "OPENROUTERS":
+        return openRoutersLLM.getPromptResponse(f"Summarize this text in less than 50 words: {text}")
 
 def jsonExtractor(emailText):
     if workMode == "DEBUGGING":
         return {"eventname": "GenAIHackathon", "date": "19-04-2024", "location": "MG Auditorium"}
 
-    PROMPT=f"""You must respond using JSON format.
+    elif workMode == "LOCAL_LLM":
+        PROMPT=f"""You must respond using JSON format.
 Extract details of an event from given body of text
 
 {JSON_SCHEMA}
@@ -45,16 +50,30 @@ BEGIN! Extract event data
 --------
 Mail: {emailText}
 Data:"""
-    text = hfpipeline.invoke(PROMPT, stop=["Mail:","Data:", "Email:", "--------", "}"])
-    text = str(text)
+        text = hfpipeline.invoke(PROMPT, stop=["Mail:","Data:", "Email:", "--------", "}"])
+        text = str(text)
     
-    # MODEL SPECIFIC TEXT PROCESSING
-    text = text[:text.find('Email:')]
+        # MODEL SPECIFIC TEXT PROCESSING
+        text = text[:text.find('Email:')]
+        
+        # TEXT PROCESSING
+        text = (text[text.rfind('{'): text.rfind('}') + 1])
+        text = text.replace("\n","").replace("\r\n","")
+        return (json.loads(text))
     
-    # TEXT PROCESSING
-    text = (text[text.rfind('{'): text.rfind('}') + 1])
-    text = text.replace("\n","").replace("\r\n","")
-    return (json.loads(text))
+    elif workMode == "OPENROUTERS":
+        PROMPT=f"""You must respond using JSON format.
+Extract details of an event from given body of text
+EXAMPLES
+--------
+{TRAINING_EXAMPLE}
+
+BEGIN! Extract event data
+--------
+Mail: {emailText}
+Data:"""
+        responseJson = openRoutersLLM.getPromptResponse(PROMPT)
+        return json.loads(responseJson['choices'][0]['message']['content'].strip().replace('\n',''))
 
 
 """
@@ -125,5 +144,6 @@ Mail: {EMAIL_EXAMPLE}
 Data:"""
 
 if __name__ == "__main__":
-    print(jsonExtractor(EMAIL_EXAMPLE))
-    print(summarizeThis(ARTICLE))
+    print("Work Mode: ", workMode)
+    if input("run json extractor ? ") == 'y': print(jsonExtractor(EMAIL_EXAMPLE))
+    if input("run summarizer ? ") == 'y': print(summarizeThis(ARTICLE))
