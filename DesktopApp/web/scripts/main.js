@@ -226,28 +226,38 @@ function openMap(emailIndex) {
     emailText = emailObject['minicontent'];
 
     mapModalTitle = document.getElementById('mapModalTitle');
+    loadElement = document.getElementById('mapLoadingDiv');
+    mapElement = document.getElementById('map');
+
+    mapElement.style.display = 'none';
+    loadElement.style.display = '';
+
+    mapModalElement = document.getElementById('mapModal');
+    mapModal = new bootstrap.Modal(mapModalElement);
+    mapModal.show();
 
     eel.getLocationLatLong(emailText)(function (coords) {
-        mapModalElement = document.getElementById('mapModal');
-        mapModal = new bootstrap.Modal(mapModalElement);
-        mapModal.show();
+
+        mapElement.style.display = '';
+        loadElement.style.display = 'none';
 
         mapModalTitle.innerHTML = coords[2];
 
         map.flyTo([coords[0], coords[1]]);
+        markerlatlng = L.latlng(coords[0], coords[1]);
+        L.marker(markerlatlng, { title: coords[2] }).addTo(map);
         map.invalidateSize();
     });
 }
 
 function generateResponseToMail(emailIndex) {
     emailObject = mails[emailIndex];
-    to = emailObject['from'];
-    emailAddressesSenders = to.match(emailRegex);
 
     myModalElement = document.getElementById('responseMailModal');
     modalTitle = document.getElementById('responseMailModalTitle');
     modalContent = document.getElementById('responseMailModalContent');
     myModal = new bootstrap.Modal(document.getElementById('responseMailModal'));
+    modalFooter = document.getElementById('responseMailModalFooter');
 
     modalContent.innerHTML = `
             <div class="text-center">
@@ -256,12 +266,23 @@ function generateResponseToMail(emailIndex) {
                 </div>
             </div>
         `;
+    modalFooter.innerHTML = `
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a type="button" class="btn btn-primary" id="responseMailModalSend" onclick="sendReplyMail(${emailIndex});">Send</a>
+    `;
     myModal.show();
 
-    console.log(emailAddressesSenders);
-    console.log(emailObject['minicontent']);
     eel.generateResponseToMail(emailObject['minicontent'])(function (responseText) {
         modalTitle.innerHTML = mails[emailIndex]['subject'];
         modalContent.innerHTML = `<textarea class="form-control" style='height:40vh;' id='responseBodytextarea'>${responseText}</textarea>`;
     });
+}
+
+function sendReplyMail(emailIndex) {
+    emailObject = mails[emailIndex];
+    body = document.getElementById('responseBodytextarea').value;
+    to = emailObject['from'];
+    toList = to.match(emailRegex);
+    subject = "Reply: " + emailObject['subject'];
+    eel.sendMail(body, toList, subject);
 }

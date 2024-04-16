@@ -196,12 +196,13 @@ def deleteMail(msgnumber):
     imap.unselect()
 
 @eel.expose
-def sendMail(body, to, subject):
+def sendMail(body, toList, subject):
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = imap_user
-    msg['To'] = to
-    smtp.sendmail(imap_user, to, msg.as_string())
+    msg['To'] = ', '.join(toList)
+    smtp.sendmail(imap_user, ', '.join(toList), msg.as_string())
+    print("MAIL SENT SUCCESSFULLY")
 
 """
 ============================
