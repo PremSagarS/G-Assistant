@@ -15,6 +15,9 @@ import uuid
 import shutil
 import llmmodule
 from OSMPythonTools.nominatim import Nominatim
+import smtplib
+from email.mime.text import MIMEText
+
 nominatim = Nominatim()
 
 config = dict(dotenv_values())
@@ -22,9 +25,13 @@ config = dict(dotenv_values())
 imap_user = config["IMAP_USER"]
 imap_pass = config["IMAP_PASS"]
 imap_host = config["IMAP_HOST"]
+smtp_host = config["SMTP_HOST"]
 
 imap = imaplib.IMAP4_SSL(imap_host)
 imap.login(imap_user, imap_pass)
+
+smtp = smtplib.SMTP_SSL(smtp_host)
+smtp.login(imap_user, imap_pass)
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -187,6 +194,14 @@ def deleteMail(msgnumber):
     imap.store(msgnumber, '+FLAGS', '\\Deleted')
     imap.expunge()
     imap.unselect()
+
+@eel.expose
+def sendMail(body, to, subject):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = imap_user
+    msg['To'] = to
+    smtp.sendmail(imap_user, to, msg.as_string())
 
 """
 ============================

@@ -3,6 +3,7 @@ window.addEventListener("beforeunload", () => { eel.close_python })
 let mails;
 let notes;
 let map;
+let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/ig;
 
 window.onload = function () {
     map = L.map('map').setView([12.8406, 80.1534], 13);
@@ -90,6 +91,7 @@ function displayMail(mailsObject) {
     newMailsContainer.innerHTML = '';
     for (let i = 0; i < mailsObject.length; i++) {
         let mailObject = mailsObject[mailsObject.length - i - 1];
+        mailIndex = mailsObject.length - i - 1;
 
         if (mailObject['textOnly'] == true) {
             mailBody = `<p style='max-height:100%; overflow-y:scroll; text-align:left;'>${mailObject['minicontent'].replaceAll("\r\n", "<br>").replaceAll("\n", "<br>")}</p>`;
@@ -98,7 +100,7 @@ function displayMail(mailsObject) {
         }
 
         newMailsContainer.innerHTML += `
-        <div class="row border border-black newMailBar border-2 align-items-center justify-content-between" id = "${i}MsgBar" onclick = 'mailBarClicked(${i});'>
+        <div class="row border border-black newMailBar border-2 align-items-center justify-content-between" id = "${mailIndex}MsgBar" onclick = 'mailBarClicked(${mailIndex});'>
             <div class="col-2 text-truncate" style='margin-top:8px;'>
                 <p class="h5">${mailObject["from"]}</p>
             </div>
@@ -106,7 +108,7 @@ function displayMail(mailsObject) {
                 <b> ${mailObject["subject"]} </b> - ${mailObject["minicontent"]}
             </div>
         </div>
-        <div class="card text-center" style="display: none;" id = "${i}MsgContentCard">
+        <div class="card text-center" style="display: none;" id = "${mailIndex}MsgContentCard">
             <div class="card-header">
                 ${mailObject["from"]}
             </div>
@@ -118,27 +120,27 @@ function displayMail(mailsObject) {
                         <button class="btn btn-primary" style="margin-top: 5px;">
                             Set Reminder
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="openMap(${i});">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="openMap(${mailIndex});">
                             Maps
                         </button>
                         <button class="btn btn-primary" style="margin-top: 5px;">
                             Calendar
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="summarizeMail(${i});">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="summarizeMail(${mailIndex});">
                             Summary
                         </button>
                     </div>
                     <div style="display:flex;column-gap:3px;">
-                        <button class="btn btn-primary" style="margin-top: 5px;" onlick="">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="generateResponseToMail(${mailIndex});">
                             Respond
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${i});">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${mailIndex});">
                             Save
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="markAsRead(${i});">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="markAsRead(${mailIndex});">
                             Mark As Read
                         </button>
-                        <button class="btn btn-danger" style="margin-top: 5px;" onclick="deleteMail(${i});">
+                        <button class="btn btn-danger" style="margin-top: 5px;" onclick="deleteMail(${mailIndex});">
                             Delete
                         </button>
                     </div>
@@ -239,8 +241,27 @@ function openMap(emailIndex) {
 
 function generateResponseToMail(emailIndex) {
     emailObject = mails[emailIndex];
+    to = emailObject['from'];
+    emailAddressesSenders = to.match(emailRegex);
+
+    myModalElement = document.getElementById('responseMailModal');
+    modalTitle = document.getElementById('responseMailModalTitle');
+    modalContent = document.getElementById('responseMailModalContent');
+    myModal = new bootstrap.Modal(document.getElementById('responseMailModal'));
+
+    modalContent.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    
+                </div>
+            </div>
+        `;
+    myModal.show();
+
+    console.log(emailAddressesSenders);
     console.log(emailObject['minicontent']);
     eel.generateResponseToMail(emailObject['minicontent'])(function (responseText) {
-        console.log(responseText);
+        modalTitle.innerHTML = mails[emailIndex]['subject'];
+        modalContent.innerHTML = `<textarea class="form-control" style='height:40vh;' id='responseBodytextarea'>${responseText}</textarea>`;
     });
 }
