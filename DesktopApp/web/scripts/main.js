@@ -117,27 +117,27 @@ function displayMail(mailsObject) {
                 <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
                 <div style="display:flex; justify-content:space-between; width:100%;">
                     <div style="display:flex;column-gap:3px;">
-                        <button class="btn btn-primary" style="margin-top: 5px;">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;">
                             Set Reminder
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="openMap(${mailIndex});">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="openMap(${mailIndex});">
                             Maps
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;">
                             Calendar
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="summarizeMail(${mailIndex});">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="summarizeMail(${mailIndex});">
                             Summary
                         </button>
                     </div>
                     <div style="display:flex;column-gap:3px;">
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="generateResponseToMail(${mailIndex});">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="generateResponseToMail(${mailIndex});">
                             Respond
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${mailIndex});">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="saveMail(${mailIndex});">
                             Save
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 5px;" onclick="markAsRead(${mailIndex});">
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="markAsRead(${mailIndex});">
                             Mark As Read
                         </button>
                         <button class="btn btn-danger" style="margin-top: 5px;" onclick="deleteMail(${mailIndex});">
@@ -268,7 +268,7 @@ function generateResponseToMail(emailIndex) {
         `;
     modalFooter.innerHTML = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <a type="button" class="btn btn-primary" id="responseMailModalSend" onclick="sendReplyMail(${emailIndex});">Send</a>
+        <a type="button" class="btn btn-outline-primary" id="responseMailModalSend" onclick="sendReplyMail(${emailIndex});">Send</a>
     `;
     myModal.show();
 

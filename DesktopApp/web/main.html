@@ -47,25 +47,25 @@
 
 <body>
     <div style="display: grid; grid-template-columns: 18% 68%; gap: 0px 8%; padding: 10px;" class="text-center">
-        <div style="display: flex; flex-direction: column; justify-content: center; background-color: white; padding: 5px; max-height: 90vh; height: fit-content;"
+        <div style="border-color: black; border-width: 2px; display: flex; flex-direction: column; justify-content: center; background-color: white; padding: 5px; max-height: 90vh; height: fit-content;"
             class="card">
             <img src="./images/mail.jpg" alt="Mail.jpg">
-            <p class="h4" style="color: darkgray;">G-Assistant</p>
+            <p class="h4" style="color: black;font-weight: bold;">G-Assistant</p>
             <p style="font-weight: bolder;">Mails</p>
             <div id="buttonsContainer"
                 style="display: flex; row-gap: 5px; flex-direction: column; justify-content: center;">
-                <button class="btn btn-primary" onclick="refresh();">
+                <button class="btn btn-outline-primary" onclick="refresh();">
                     Seen Mail
                 </button>
-                <buttun class="btn btn-primary" onclick="fetchPreviousMail();">
+                <buttun class="btn btn-outline-primary" onclick="fetchPreviousMail();">
                     Previous Mail
                 </buttun>
-                <button class="btn btn-primary" onclick="fetchSavedMail();">
+                <button class="btn btn-outline-primary" onclick="fetchSavedMail();">
                     Saved Mail
                 </button>
                 <hr>
                 <p style="font-weight: bolder;">Notes</p>
-                <button class="btn btn-primary" onclick="fetchNotes();">
+                <button class="btn btn-outline-primary" onclick="fetchNotes();">
                     Notes
                 </button>
             </div>
@@ -73,11 +73,13 @@
         <div class="column align-items-center justify-content-center">
             <nav class="navbar bg-body-tertiary" style="margin-bottom: 50px;">
                 <div class="container-fluid justify-content-center">
-                    <button class="btn btn-primary" style="margin-right: 10px;" onclick="refresh();"> Refresh </button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px;" onclick="refresh();"> Refresh
+                    </button>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
                             id="MailSearchTextBox">
-                        <button class="btn btn-primary" type="submit" onclick="return SearchMail();">Search</button>
+                        <button class="btn btn-outline-primary" type="submit"
+                            onclick="return SearchMail();">Search</button>
                     </form>
                 </div>
             </nav>
@@ -103,7 +105,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveNote();">Save Note</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="saveNote();">Save Note</button>
                 </div>
             </div>
         </div>
@@ -127,7 +129,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="button" class="btn btn-primary" id="mapModalGMapLink">Google Map</a>
+                    <a type="button" class="btn btn-outline-primary" id="mapModalGMapLink">Google Map</a>
                 </div>
             </div>
         </div>
@@ -149,7 +151,7 @@
                 </div>
                 <div class="modal-footer" id="responseMailModalFooter">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="button" class="btn btn-primary" id="responseMailModalSend">Send</a>
+                    <a type="button" class="btn btn-outline-primary" id="responseMailModalSend">Send</a>
                 </div>
             </div>
         </div>
