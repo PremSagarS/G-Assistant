@@ -268,6 +268,41 @@ def getJsonData(text):
     return llmmodule.jsonExtractor(text)
 
 @eel.expose
+def extractActionItemsJSON(text):
+    try:
+        return llmmodule.generateActionItems(text)
+    except:
+        return {'items': []}
+
+@eel.expose
+def addTaskList(subject, taskList):
+    print("CALLED")
+    if not pathlib.Path('./web/userData/tasklists.txt').exists():
+        taskLists = []
+        with open('./web/userData/tasklists.txt', 'wb') as file:
+            pickle.dump(taskLists, file)
+    
+    file = open('./web/userData/tasklists.txt', 'rb')
+    taskLists = pickle.load(file)
+    file.close()
+
+    taskLists.append({"title": subject, "taskList": taskList})
+
+    file = open('./web/userData/tasklists.txt', 'wb')
+    pickle.dump(taskLists, file)
+    file.close()
+
+@eel.expose
+def getTaskLists():
+    if not pathlib.Path('./web/userData/tasklists.txt').exists():
+        return []
+    file = open('./web/userData/tasklists.txt', 'rb')
+    returnVal = pickle.load(file)
+    file.close()
+
+    return list(returnVal)
+
+@eel.expose
 def getLocationLatLong(text):
     location = getJsonData(text)['location']
     data = nominatim.query(location)
@@ -361,7 +396,58 @@ def deleteNote(noteText, noteTitle):
 
 @eel.expose
 def getReminders():
-    return datetime.datetime.now().strftime("%d-%m-%y-%H-%M-%S")
+    FILEPATH = 'D:\\reminders.txt'
+    DATEONLY = 123
+    DATETIME = 321
+    DATETIMEFORMAT = '%d-%m-%y-%H-%M-%S'
+    DATEONLYFORMAT = '%d-%m-%y'
 
-eel.init('web')
-eel.start('main.html')
+    reminderFile = open(FILEPATH)
+
+    reminders = []
+
+    for line in reminderFile.readlines():
+        remname,remstring =  line.strip().split()
+        try:
+            reminder = datetime.datetime.strptime(remstring, DATETIMEFORMAT).strftime(DATETIMEFORMAT)
+            remType = DATETIME
+        except ValueError:
+            reminder = datetime.datetime.strptime(remstring, DATEONLYFORMAT).strftime(DATEONLYFORMAT)
+            remType = DATEONLY
+        
+        reminders.append((remname, reminder, remType))
+
+    reminderFile.close()
+
+    return reminders
+
+@eel.expose
+def createReminder(dateString, subject):
+    dateString = dateString.replace(" ", "")
+    addReminder(subject, datetime.datetime.strptime(dateString, '%d-%m-%y').strftime("%d-%m-%y"))
+    return "Done"
+
+def addReminder(eventName, dateString):
+    file1 = open("D:\\reminders.txt", "r") 
+    Lines = file1.readlines()
+    print(Lines)
+
+    d={}
+    for i in range(len(Lines)):
+        st=Lines[i].split()
+        d[st[0]]=st[1]
+    
+    d[eventName] = dateString
+
+    final=[]
+    file1=open("D:\\reminders.txt","w")
+    for i in d:
+        st=i+" "+d[i]+"\n"
+        file1.write(st)
+        final.append({"name":i,"datestring":d[i]})
+    print(final)
+    file1.close()
+
+if __name__ == "__main__":
+    eel.init('web')
+    eel.start('main.html')

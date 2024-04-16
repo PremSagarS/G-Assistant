@@ -84,7 +84,7 @@ Data:"""
         return json.loads(possibleJsonData)
 
 def createActionExtractionPrompt(mailText):
-    return """Extract action items from the following Mail
+    return """Extract action items from the following Mail Conversation
 Respond only in valid JSON strictly using following JSON_schema:
 {"items": [{"name": "task1", "date":"dd-mm-yy","time":"HH:MM:SS"}]
 always generate the output in the json schema
@@ -92,6 +92,7 @@ Current Date: 16-04-24
 Add deadline time only if possible but deadline date is necessary if possible
 deadline date format: dd-mm-yy
 deadline time format: HH:MM:SS
+Don't extract items if they have already been completed
 
 EXAMPLES:
 

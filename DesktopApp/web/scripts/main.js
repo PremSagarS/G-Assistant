@@ -3,6 +3,7 @@ window.addEventListener("beforeunload", () => { eel.close_python })
 let mails;
 let notes;
 let map;
+let taskList;
 let emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/ig;
 
 window.onload = function () {
@@ -123,8 +124,8 @@ function displayMail(mailsObject) {
                         <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="openMap(${mailIndex});">
                             Maps
                         </button>
-                        <button class="btn btn-outline-primary" style="margin-top: 5px;">
-                            Calendar
+                        <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="displayActionItems(${mailIndex});">
+                            TaskList
                         </button>
                         <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="summarizeMail(${mailIndex});">
                             Summary
@@ -285,4 +286,97 @@ function sendReplyMail(emailIndex) {
     toList = to.match(emailRegex);
     subject = "Reply: " + emailObject['subject'];
     eel.sendMail(body, toList, subject);
+}
+
+function displayActionItems(emailIndex) {
+    let emailObject = mails[emailIndex];
+
+    let myModalElement = document.getElementById('taskListModal');
+    let modalTitle = document.getElementById('taskListModalTitle');
+    let modalContent = document.getElementById('taskListModalContent');
+    let modalFooter = document.getElementById('taskListModalFooter');
+    let myModal = new bootstrap.Modal(document.getElementById('taskListModal'));
+
+    modalTitle.innerHTML = emailObject['subject'];
+    myModal.show();
+
+    eel.extractActionItemsJSON(emailObject['minicontent'])(function (taskListLocal) {
+        taskList = taskListLocal;
+        console.log(taskList);
+        modalContent.innerHTML = `
+        <ul class="list-group" id="taskList-list-group">
+        </ul>
+        `;
+        let modalListElement = document.getElementById('taskList-list-group');
+        for (let i = 0; i < taskList['items'].length; i++) {
+            task = taskList['items'][i];
+            modalListElement.innerHTML +=
+                `<li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" name="taskListCheckboxes" value="" id="">
+                    <label class="form-check-label" for="taskListCheckboxes">
+                        <div class="row" style="display:flex; align-items:space-between;">
+                            <span>${task['name']}</span>
+                            <span>Date: ${task['date']}</span>
+                            <span>Time: ${task['time']}</span>
+                            <button class='btn btn-primary' onclick='createReminder("${task['date']}", "${task['name']}");'>Remind</button>
+                        </div>
+                    </label>
+                </li>`;
+        }
+        modalFooter.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class='btn btn-outline-primary' id='taskListModalSave' onclick="saveTaskList('${emailObject['subject']}');">Save</button>
+        `;
+    });
+}
+
+function createReminder(dateString, subject) {
+    eel.createReminder(dateString, subject)(function () {
+        console.log("DONE");
+    });
+}
+
+function saveTaskList(subject) {
+    eel.addTaskList(subject, taskList)(function () {
+        console.log(subject, taskList);
+    });
+}
+
+function getTasksAndDisplay() {
+    eel.getTaskLists()(function (taskLists) {
+        displayTasks(taskLists)
+    });
+}
+
+function displayTasks(taskLists) {
+    taskListsContainer = document.getElementById("newMailsContainer");
+    console.log(taskLists);
+    for (let i = 0; i < taskLists.length; i++) {
+        console.log(taskList);
+        taskListsContainer.innerHTML += taskList;
+    }
+}
+
+function getAndDisplayReminders() {
+    let remindersContainer = document.getElementById("newMailsContainer");
+    remindersContainer.innerHTML = `
+    <div class="text-center">
+                <div class="spinner-border" role="status">
+                    
+                </div>
+            </div>
+    `;
+    eel.getReminders()(function (reminders) {
+        remindersContainer.innerHTML = '';
+        console.log(reminders);
+        for (let i = 0; i < reminders.length; i++) {
+            reminder = reminders[i];
+            remindersContainer.innerHTML += `
+                <div class="card">
+                    <h1>${reminder[0]}</h1>
+                    <p>${reminder[2]}</p>
+                </div>
+            `;
+        }
+    });
 }
