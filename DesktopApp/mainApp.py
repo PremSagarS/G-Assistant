@@ -333,5 +333,15 @@ def deleteNote(noteText, noteTitle):
     pickle.dump(notesArray, file)
     file.close()
 
+"""
+=====================
+    SET REMINDER
+=====================
+"""
+
+@eel.expose
+def getReminders():
+    return datetime.datetime.now().strftime("%d-%m-%y-%H-%M-%S")
+
 eel.init('web')
 eel.start('main.html')

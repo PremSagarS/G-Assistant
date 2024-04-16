@@ -116,7 +116,7 @@ function displayMail(mailsObject) {
                 <div style="display:flex; justify-content:space-between; width:100%;">
                     <div style="display:flex;column-gap:3px;">
                         <button class="btn btn-primary" style="margin-top: 5px;">
-                            Meet
+                            Set Reminder
                         </button>
                         <button class="btn btn-primary" style="margin-top: 5px;" onclick="openMap(${i});">
                             Maps
