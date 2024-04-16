@@ -1,13 +1,14 @@
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 from langchain_community.llms import HuggingFacePipeline
 from langchain_experimental.llms import JsonFormer
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 import json
 import os
 import openRoutersLLM
 
-load_dotenv()
-workMode = os.environ["WORK_MODE"]
+config = dict(dotenv_values())
+
+workMode = config["WORK_MODE"]
 
 if workMode == "LOCAL_LLM":
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
@@ -27,6 +28,13 @@ def summarizeThis(text):
     
     elif workMode == "OPENROUTERS":
         return openRoutersLLM.getPromptResponse(f"Tell me what this email sent to me is about in less than 100 words: {text}")['choices'][0]['message']['content']
+
+def generateResponse(mailContent):
+    print(workMode)
+    if workMode == "DEBUGGING":
+        return "Example response to an email"
+    elif workMode == "OPENROUTERS":
+        return openRoutersLLM.getPromptResponse(f"I received the following mail. Generate response to the mail:\n {mailContent}")['choices'][0]['message']['content']
 
 def jsonExtractor(emailText):
     if workMode == "DEBUGGING":
@@ -74,7 +82,6 @@ Data:"""
         possibleJsonData = (possibleJsonData[possibleJsonData.rfind('{'): possibleJsonData.rfind('}') + 1])
         print("POSSIBLE JSON DATA\n\n", json.loads(possibleJsonData))
         return json.loads(possibleJsonData)
-
 
 """
 ========================================
@@ -135,7 +142,12 @@ Now Extract event data as JSON for the following email:
 Mail: {EMAIL_EXAMPLE}
 JSON:"""
 
+RESPONSE_MAIL_EXAMPLE = """
+How are you bro ?
+"""
+
 if __name__ == "__main__":
     print("Work Mode: ", workMode)
     if input("run json extractor ? ") == 'y': print(jsonExtractor(EMAIL_EXAMPLE))
     if input("run summarizer ? ") == 'y': print(summarizeThis(ARTICLE))
+    if input("run generate response ? ") == 'y': print(generateResponse(RESPONSE_MAIL_EXAMPLE))

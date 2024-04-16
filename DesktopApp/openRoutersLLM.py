@@ -1,12 +1,12 @@
 import requests
 import json
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 from pprint import pprint
 
-load_dotenv()
+config = dict(dotenv_values())
 
-key = os.environ['OPEN_ROUTERS_KEY']
+key = config['OPEN_ROUTERS_KEY']
 
 def getPromptResponse(prompt):
     response = requests.post(

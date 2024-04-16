@@ -3,7 +3,7 @@ import os
 import pathlib
 import datetime
 import sys
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 import replicate
 import imaplib
 import email
@@ -17,11 +17,11 @@ import llmmodule
 from OSMPythonTools.nominatim import Nominatim
 nominatim = Nominatim()
 
-load_dotenv()
+config = dict(dotenv_values())
 
-imap_user = os.environ["IMAP_USER"]
-imap_pass = os.environ["IMAP_PASS"]
-imap_host = os.environ["IMAP_HOST"]
+imap_user = config["IMAP_USER"]
+imap_pass = config["IMAP_PASS"]
+imap_host = config["IMAP_HOST"]
 
 imap = imaplib.IMAP4_SSL(imap_host)
 imap.login(imap_user, imap_pass)
@@ -242,6 +242,10 @@ def close_python(page, sockets_still_open):
 @eel.expose
 def summarizeEmail(text):
     return llmmodule.summarizeThis(text)
+
+@eel.expose
+def generateResponseToMail(text):
+    return llmmodule.generateResponse(text)
 
 @eel.expose
 def getJsonData(text):

@@ -129,6 +129,9 @@ function displayMail(mailsObject) {
                         </button>
                     </div>
                     <div style="display:flex;column-gap:3px;">
+                        <button class="btn btn-primary" style="margin-top: 5px;" onlick="">
+                            Respond
+                        </button>
                         <button class="btn btn-primary" style="margin-top: 5px;" onclick="saveMail(${i});">
                             Save
                         </button>
@@ -231,5 +234,13 @@ function openMap(emailIndex) {
 
         map.flyTo([coords[0], coords[1]]);
         map.invalidateSize();
+    });
+}
+
+function generateResponseToMail(emailIndex) {
+    emailObject = mails[emailIndex];
+    console.log(emailObject['minicontent']);
+    eel.generateResponseToMail(emailObject['minicontent'])(function (responseText) {
+        console.log(responseText);
     });
 }

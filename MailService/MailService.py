@@ -4,13 +4,13 @@ from base64 import b64decode
 from time import sleep
 import win11toast
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
-load_dotenv()
+config = dotenv_values()
 
-imap_user = os.environ["IMAP_USER"]
-imap_pass = os.environ["IMAP_PASS"]
-imap_host = os.environ["IMAP_HOST"]
+imap_user = config["IMAP_USER"]
+imap_pass = config["IMAP_PASS"]
+imap_host = config["IMAP_HOST"]
 
 imap = imaplib.IMAP4_SSL(imap_host)
 imap.login(imap_user, imap_pass)
