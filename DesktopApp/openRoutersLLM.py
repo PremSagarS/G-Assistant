@@ -19,7 +19,9 @@ def getPromptResponse(prompt):
             "messages":[
                 {"role": "user", "content": f"{prompt}"},
             ],
-            "temperature":0.5,
+            "temperature":0.2,
+            "top_k":1,
+            "top_p":0.1,
         })
     )
 

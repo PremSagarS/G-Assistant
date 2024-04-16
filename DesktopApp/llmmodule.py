@@ -78,10 +78,46 @@ Mail: {emailText}
 Data:"""
         responseJson = openRoutersLLM.getPromptResponse(PROMPT)
         print(responseJson['choices'][0]['message']['content'])
-        possibleJsonData = responseJson['choices'][0]['message']['content'].strip().replace('\n','')
-        possibleJsonData = (possibleJsonData[possibleJsonData.rfind('{'): possibleJsonData.rfind('}') + 1])
+        possibleJsonData = responseJson['choices'][0]['message']['content'].strip().replace('\n','').replace('\\','')
+        possibleJsonData = (possibleJsonData[possibleJsonData.find('{'): possibleJsonData.rfind('}') + 1])
         print("POSSIBLE JSON DATA\n\n", json.loads(possibleJsonData))
         return json.loads(possibleJsonData)
+
+def createActionExtractionPrompt(mailText):
+    return """Extract action items from the following Mail
+Respond only in valid JSON strictly using following JSON_schema:
+{"items": [{"name": "task1", "date":"dd-mm-yy","time":"HH:MM:SS"}]
+always generate the output in the json schema
+Current Date: 16-04-24
+Add deadline time only if possible but deadline date is necessary if possible
+deadline date format: dd-mm-yy
+deadline time format: HH:MM:SS
+
+EXAMPLES:
+
+Mail: Please complete report by April 16
+JSON: {"items": [{"name": "Complete Report", "date":"16-04-2024","time":""}]}
+Mail: Please create a meet at 2:00 PM on 16th of April
+JSON: {"items": [{"name": "Create Meet", "date":"16-04-2024","time":"14:00:00"}]}
+Mail: Please complete report by 16 April, goto VIT Chennai at 15 April to collect ID and schedule online meet tomorrow at 8:00PM
+JSON: {"items": [{"name": "Complete Report", "date":"16-04-2024","time":""}, {"name":"Collect ID at VIT Chennai","date":"15-04-2024","time":""}, {"name":"Schedule Meet","date":"17-04-2024","time":"20:00:00"}]}
+
+Now complete:
+Mail:
+%s
+JSON:
+""" % mailText
+
+def generateActionItems(emailText):
+    prompt = createActionExtractionPrompt(emailText)
+    if workMode == "DEBUGGING":
+        return {"items": [{"name": "Create Meet", "date":"16-04-2024","time":"14:00:00"}]}
+    elif workMode == "OPENROUTERS":
+        responseJson = openRoutersLLM.getPromptResponse(prompt)
+        possibleJsonData = responseJson['choices'][0]['message']['content'].strip().replace('\n','')
+        possibleJsonData = (possibleJsonData[possibleJsonData.find('{'): possibleJsonData.rfind('}') + 1])
+        return json.loads(possibleJsonData)
+
 
 """
 ========================================
@@ -146,8 +182,16 @@ RESPONSE_MAIL_EXAMPLE = """
 How are you bro ?
 """
 
+EXAMPLE_TASK_MAIL = """
+Hey prem,
+
+By tomorrow complete the project report, create a presentation, pick up order from VIT Chennai and notify me tomorrow at 3:00 PM via Meet.
+
+"""
+
 if __name__ == "__main__":
     print("Work Mode: ", workMode)
     if input("run json extractor ? ") == 'y': print(jsonExtractor(EMAIL_EXAMPLE))
     if input("run summarizer ? ") == 'y': print(summarizeThis(ARTICLE))
     if input("run generate response ? ") == 'y': print(generateResponse(RESPONSE_MAIL_EXAMPLE))
+    if input("run action extraction ? ") == 'y': print(generateActionItems(EXAMPLE_TASK_MAIL))
