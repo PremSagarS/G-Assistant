@@ -353,7 +353,6 @@ function displayTasks(taskLists) {
     console.log(taskLists);
     for (let i = 0; i < taskLists.length; i++) {
         console.log(taskList);
-        taskListsContainer.innerHTML += taskList;
     }
 }
 
@@ -369,12 +368,33 @@ function getAndDisplayReminders() {
     eel.getReminders()(function (reminders) {
         remindersContainer.innerHTML = '';
         console.log(reminders);
+        let date, time;
         for (let i = 0; i < reminders.length; i++) {
-            reminder = reminders[i];
+            let reminder = reminders[i];
+            if (reminder[2] == 321) {
+                date = reminder[1].split('-').splice(0, 3).join('-');
+                time = reminder[1].split('-').splice(3, 3).join(':');
+            } else {
+                date = reminder[1].split('-').splice(0, 3).join('-');
+                time = "N/A";
+            }
             remindersContainer.innerHTML += `
                 <div class="card">
-                    <h1>${reminder[0]}</h1>
-                    <p>${reminder[2]}</p>
+                    <div class="row">
+                        <div class="col-sm">
+                            <p>${reminder[0]}</p>
+                        </div>
+                        <div class="col-sm">
+                            <p>Date: ${date}</p>
+                        </div>
+                        <div class="col-sm">
+                            <p>Time: ${time}</p>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-primary">Done</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
                 </div>
             `;
         }
