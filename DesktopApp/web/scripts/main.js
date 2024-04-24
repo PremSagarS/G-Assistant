@@ -362,10 +362,33 @@ function getTasksAndDisplay() {
 }
 
 function displayTasks(taskLists) {
-    taskListsContainer = document.getElementById("newMailsContainer");
+    let taskListsContainer = document.getElementById("newMailsContainer");
+    taskListsContainer.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap;gap:10px;" id="taskListsContainer">
+
+        </div>
+    `;
+    let taskListsContainertemp = document.getElementById('taskListsContainer')
     console.log(taskLists);
     for (let i = 0; i < taskLists.length; i++) {
-        console.log(taskList);
+        let taskList = taskLists[i]['taskList']['items'];
+        for (let j = 0; j < taskList.length; j++) {
+            let taskObject = taskList[j];
+            taskListsContainertemp.innerHTML += `
+                <div class="card" style="width:20rem;">
+                    <div class="card-header">
+                        <span style="font-weight:bold;">${taskObject['name']}</span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Deadline Date: ${taskObject['date']}</li>
+                        <li class="list-group-item">Deadline Time: ${taskObject['time'] == '' ? 'N/A' : taskObject['time']}</li>
+                        <li class="list-group-item">
+                            <button class="btn btn-primary">Done</button>
+                        </li>
+                    </ul>
+                </div>
+            `;
+        }
     }
 }
 
