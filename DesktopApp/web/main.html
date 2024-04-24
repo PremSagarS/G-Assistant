@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="./scripts/main.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -43,27 +43,45 @@
             box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
             transform: translate3d(0px, -1px, 0px);
         }
+
+        #b1:hover,#b2:hover,#b3:hover,#b4:hover {
+            background-color: rgb(209 213 219);
+            color: black;
+            width:200%;
+        }
+        #b1,#b2,#b3,#b4
+        {
+            background-color:black;
+            width: 200%;
+        }
     </style>
 </head>
 
 <body>
+
     <div style="display: grid; grid-template-columns: 18% 68%; gap: 0px 8%; padding: 10px;" class="text-center">
         <div id="sidebar">
-            <div style="display: flex; flex-direction: column;background-color: black; color:white; padding: 5px;height:770px;width:250px" class="card">
-                <p class="h4" style="color: darkgray;padding-top:50px;">G-Assistant</p>
-                <p style="font-weight: bolder;padding-top:30px">Mails</p>
-                <div id="buttonsContainer" style="display: flex; row-gap: 20px; flex-direction: column; justify-content: center; padding-top:50px;">
-                    <button class="btn btn-primary" onclick="refresh();" style="background-color:black">
-                        Seen Mail
+            <div style="display: flex; flex-direction: column;background-color: black; color:white;align-items:center;padding: 5px;height:770px;width:270px" class="card">
+                <p class="h4" style="color: darkgray;">G-Assistant</p>
+                <p style="font-weight: bolder"><u>Mails</u></p>
+                <div id="buttonsContainer" style="display: flex; row-gap: 20px; flex-direction: column; justify-content: start;align-items:center; padding-top:100px;">
+                    <button class="btn btn-primary" onclick="refresh();" id="b1" style="border:none;">
+                        <div style="display:flex;flex-direction:row;justify-content:start">
+                            <div style="color:white;"><i class="fa fa-inbox" aria-hidden="true"></i></div>
+                            <div style="margin-left:45px">Inbox</div>
+                        </div>
                     </button>
-                    <button class="btn btn-primary" onclick="fetchPreviousMail();" style="background-color:black">
-                        Previous Mail
+                    <button class="btn btn-primary" onclick="fetchPreviousMail();" id="b2" style="border:none">
+                        <div style="display:flex;flex-direction:row;justify-content:start">
+                            <div style="color:white;"><i class="fa fa-reply" aria-hidden="true"></i></div>
+                            <div style="margin-left:0px">PreviousMail</div>
+                        </div>
                     </button>
-                    <button class="btn btn-primary" onclick="fetchSavedMail();" style="margin-bottom:10px ; background-color:black">
+                    <button class="btn btn-primary" onclick="fetchSavedMail();" id="b3" style="margin-bottom:10px;border:none">
                         Saved Mail
                     </button>
-                    <p style="font-weight: bolder; border-top:2px solid lightgrey;margin-top:10px">Notes</p>
-                    <button class="btn btn-primary" onclick="fetchNotes();" style="background-color:black">
+                    <p style="font-weight: bolder;margin-top:10px"><u>Notes</u></p>
+                    <button class="btn btn-primary" onclick="fetchNotes();" id="b4" style="border:none">
                         Notes
                     </button>
                 </div>
@@ -72,7 +90,7 @@
         <div class="column align-items-center justify-content-center" >
             <nav class="navbar" style="margin-bottom: 50px;border-top: 1px;">
                 <div class="container-fluid justify-content-center">
-                    <button class="btn btn-primary" style="margin-right: 10px; background-color:black" onclick="refresh();"> Refresh </button>
+                    <button class="btn btn-primary" style="margin-right: 10px; background-color:black" onclick="refresh();">Refresh</button>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
                             id="MailSearchTextBox">
@@ -127,8 +145,5 @@
         </div>
     </div>
 </body>
-<script>
-<!-- document.getElementById('sidebar').innerHTML=""; -->
-</script>
 
 </html>
