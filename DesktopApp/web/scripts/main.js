@@ -233,6 +233,8 @@ function openMap(emailIndex) {
     mapElement.style.display = 'none';
     loadElement.style.display = '';
 
+    mapModalTitle.innerHTML = 'Loading...';
+
     mapModalElement = document.getElementById('mapModal');
     mapModal = new bootstrap.Modal(mapModalElement);
     mapModal.show();
@@ -298,6 +300,15 @@ function displayActionItems(emailIndex) {
     let myModal = new bootstrap.Modal(document.getElementById('taskListModal'));
 
     modalTitle.innerHTML = emailObject['subject'];
+
+    modalContent.innerHTML = `
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            
+        </div>
+    </div>
+    `;
+
     myModal.show();
 
     eel.extractActionItemsJSON(emailObject['minicontent'])(function (taskListLocal) {
@@ -360,10 +371,10 @@ function getAndDisplayReminders() {
     let remindersContainer = document.getElementById("newMailsContainer");
     remindersContainer.innerHTML = `
     <div class="text-center">
-                <div class="spinner-border" role="status">
-                    
-                </div>
-            </div>
+        <div class="spinner-border" role="status">
+            
+        </div>
+    </div>
     `;
     eel.getReminders()(function (reminders) {
         remindersContainer.innerHTML = '';
