@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-Assistant</title>
-
-    <link rel="icon" type="image/x-icon" href="./images/favicon.png">
-
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="./scripts/main.js"></script>
 
@@ -31,6 +29,7 @@
             margin: 0px;
             max-width: 100vw;
             min-height: 100vh;
+            background-color: #fff5ee;
         }
 
         #map {
@@ -49,45 +48,35 @@
 
 <body>
     <div style="display: grid; grid-template-columns: 18% 68%; gap: 0px 8%; padding: 10px;" class="text-center">
-        <div style="border-color: black; border-width: 2px; display: flex; flex-direction: column; justify-content: center; background-color: white; padding: 5px;"
-            class="card">
-            <img src="./images/mail.jpg" alt="Mail.jpg">
-            <p class="h4" style="color: black;font-weight: bold;">G-Assistant</p>
-            <p style="font-weight: bolder;">Mails</p>
-            <div id="buttonsContainer"
-                style="display: flex; row-gap: 5px; flex-direction: column; justify-content: center;">
-                <button class="btn btn-outline-primary" onclick="refresh();">
-                    Seen Mail
-                </button>
-                <buttun class="btn btn-outline-primary" onclick="fetchPreviousMail();">
-                    Previous Mail
-                </buttun>
-                <button class="btn btn-outline-primary" onclick="fetchSavedMail();">
-                    Saved Mail
-                </button>
-                <hr>
-                <p style="font-weight: bolder;">Notes</p>
-                <button class="btn btn-outline-primary" onclick="fetchNotes();">
-                    Notes
-                </button>
-                <hr>
-                <p style="font-weight: bolder;">Task List</p>
-                <button class="btn btn-outline-primary" onclick="getTasksAndDisplay();">Task Lists</button>
-                <hr>
-                <p style="font-weight: bolder;">Upcoming</p>
-                <button class="btn btn-outline-primary" onclick="getAndDisplayReminders();">Reminders</button>
+        <div id="sidebar">
+            <div style="display: flex; flex-direction: column;background-color: black; color:white; padding: 5px;height:770px;width:250px" class="card">
+                <p class="h4" style="color: darkgray;padding-top:50px;">G-Assistant</p>
+                <p style="font-weight: bolder;padding-top:30px">Mails</p>
+                <div id="buttonsContainer" style="display: flex; row-gap: 20px; flex-direction: column; justify-content: center; padding-top:50px;">
+                    <button class="btn btn-primary" onclick="refresh();" style="background-color:black">
+                        Seen Mail
+                    </button>
+                    <button class="btn btn-primary" onclick="fetchPreviousMail();" style="background-color:black">
+                        Previous Mail
+                    </button>
+                    <button class="btn btn-primary" onclick="fetchSavedMail();" style="margin-bottom:10px ; background-color:black">
+                        Saved Mail
+                    </button>
+                    <p style="font-weight: bolder; border-top:2px solid lightgrey;margin-top:10px">Notes</p>
+                    <button class="btn btn-primary" onclick="fetchNotes();" style="background-color:black">
+                        Notes
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="column align-items-center justify-content-center">
-            <nav class="navbar bg-body-tertiary" style="margin-bottom: 50px;">
+        <div class="column align-items-center justify-content-center" >
+            <nav class="navbar" style="margin-bottom: 50px;border-top: 1px;">
                 <div class="container-fluid justify-content-center">
-                    <button class="btn btn-outline-primary" style="margin-right: 10px;" onclick="refresh();"> Refresh
-                    </button>
+                    <button class="btn btn-primary" style="margin-right: 10px; background-color:black" onclick="refresh();"> Refresh </button>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
                             id="MailSearchTextBox">
-                        <button class="btn btn-outline-primary" type="submit"
-                            onclick="return SearchMail();">Search</button>
+                        <button class="btn btn-primary" type="submit" onclick="return SearchMail();" style="background-color:black">Search</button>
                     </form>
                 </div>
             </nav>
@@ -113,7 +102,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="saveNote();">Save Note</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNote();">Save Note</button>
                 </div>
             </div>
         </div>
@@ -127,65 +116,19 @@
                         Title
                     </h5>
                 </div>
-                <div id="mapLoadingDiv" class="text-center">
-                    <div class="spinner-border" role="status">
-
-                    </div>
-                </div>
                 <div id="map" class="modal-body">
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="button" class="btn btn-outline-primary" id="mapModalGMapLink">Google Map</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" tabindex="-1" id="responseMailModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="responseMailModalTitle">
-                        Title
-                    </h5>
-                </div>
-                <div id="responseMailModalContent" class="modal-body">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" id="responseMailModalFooter">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="button" class="btn btn-outline-primary" id="responseMailModalSend">Send</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" tabindex="-1" id="taskListModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="taskListModalTitle">
-                        Title
-                    </h5>
-                </div>
-                <div id="taskListModalContent" class="modal-body">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" id="taskListModalFooter">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="button" class="btn btn-outline-primary" id="responseMailModalSend">Send</a>
+                    <a type="button" class="btn btn-primary" id="mapModalGMapLink">Google Map</a>
                 </div>
             </div>
         </div>
     </div>
 </body>
+<script>
+<!-- document.getElementById('sidebar').innerHTML=""; -->
+</script>
 
 </html>
