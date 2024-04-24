@@ -315,18 +315,20 @@ function displayActionItems(emailIndex) {
         taskList = taskListLocal;
         console.log(taskList);
         modalContent.innerHTML = `
-        <ul class="list-group" id="taskList-list-group">
-        </ul>
+        <form action="" onsubmit="return false;">
+            <ul class="list-group" id="taskList-list-group">
+            </ul>
+        </form>
         `;
         let modalListElement = document.getElementById('taskList-list-group');
         for (let i = 0; i < taskList['items'].length; i++) {
             task = taskList['items'][i];
             modalListElement.innerHTML +=
                 `<li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="taskListCheckboxes" value="" id="">
+                    <input class="form-check-input me-1" type="checkbox" name="taskListCheckboxes" value="${i}" id="${i}taskListCheckboxes">
                     <label class="form-check-label" for="taskListCheckboxes">
                         <div class="row" style="display:flex; align-items:space-between;">
-                            <span>${task['name']}</span>
+                            <p>${task['name']}</p>
                             <span>Date: ${task['date']}</span>
                             <span>Time: ${task['time']}</span>
                             <button class='btn btn-primary' onclick='createReminder("${task['date']}", "${task['name']}");'>Remind</button>

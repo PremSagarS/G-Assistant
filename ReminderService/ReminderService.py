@@ -17,7 +17,9 @@ while True:
     reminders = []
 
     for line in reminderFile.readlines():
-        remname,remstring =  line.strip().split()
+        remnameString =  line.strip().split()
+        remname = " ".join(remnameString[:-1])
+        remstring = remnameString[-1]
         try:
             reminder = datetime.strptime(remstring, DATETIMEFORMAT)
             remType = DATETIME

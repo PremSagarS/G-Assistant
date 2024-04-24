@@ -407,7 +407,9 @@ def getReminders():
     reminders = []
 
     for line in reminderFile.readlines():
-        remname,remstring =  line.strip().split()
+        remnameString = line.strip().split()
+        remname = " ".join(remnameString[:-1])
+        remstring = remnameString[-1]
         try:
             reminder = datetime.datetime.strptime(remstring, DATETIMEFORMAT).strftime(DATETIMEFORMAT)
             remType = DATETIME
@@ -424,7 +426,10 @@ def getReminders():
 @eel.expose
 def createReminder(dateString, subject):
     dateString = dateString.replace(" ", "")
-    addReminder(subject, datetime.datetime.strptime(dateString, '%d-%m-%y').strftime("%d-%m-%y"))
+    try:
+        addReminder("_".join(subject.split()), datetime.datetime.strptime(dateString, '%d-%m-%y').strftime("%d-%m-%y"))
+    except:
+        addReminder(subject, datetime.datetime.strptime(dateString, '%d-%m-%Y').strftime("%d-%m-%y"))
     return "Done"
 
 def addReminder(eventName, dateString):
@@ -435,7 +440,7 @@ def addReminder(eventName, dateString):
     d={}
     for i in range(len(Lines)):
         st=Lines[i].split()
-        d[st[0]]=st[1]
+        d[" ".join(st[:-1])]=st[-1]
     
     d[eventName] = dateString
 

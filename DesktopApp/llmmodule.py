@@ -97,11 +97,13 @@ Don't extract items if they have already been completed
 EXAMPLES:
 
 Mail: Please complete report by April 16
-JSON: {"items": [{"name": "Complete Report", "date":"16-04-2024","time":""}]}
-Mail: Please create a meet at 2:00 PM on 16th of April
-JSON: {"items": [{"name": "Create Meet", "date":"16-04-2024","time":"14:00:00"}]}
-Mail: Please complete report by 16 April, goto VIT Chennai at 15 April to collect ID and schedule online meet tomorrow at 8:00PM
-JSON: {"items": [{"name": "Complete Report", "date":"16-04-2024","time":""}, {"name":"Collect ID at VIT Chennai","date":"15-04-2024","time":""}, {"name":"Schedule Meet","date":"17-04-2024","time":"20:00:00"}]}
+JSON: {"items": [{"name": "Complete Report", "date":"16-04-24","time":""}]}
+Mail: Please create a meet at 2:00 PM on 17th of April
+JSON: {"items": [{"name": "Create Meet", "date":"17-04-24","time":"14:00:00"}]}
+Mail: goto VIT Chennai at 15 April to collect ID and schedule online meet tomorrow at 8:00PM
+JSON: {"items": [{"name":"Collect ID at VIT Chennai","date":"15-04-24","time":""}, {"name":"Schedule Meet","date":"17-04-24","time":"20:00:00"}]}
+Mail: Hi bro how are you ?
+JSON: {"items": []}
 
 Now complete:
 Mail:
@@ -112,7 +114,7 @@ JSON:
 def generateActionItems(emailText):
     prompt = createActionExtractionPrompt(emailText)
     if workMode == "DEBUGGING":
-        return {"items": [{"name": "Create Meet", "date":"16-04-2024","time":"14:00:00"}]}
+        return {"items": [{"name":"Collect ID at VIT Chennai","date":"15-04-2024","time":""}, {"name":"Schedule Meet","date":"17-04-2024","time":"20:00:00"}]}
     elif workMode == "OPENROUTERS":
         responseJson = openRoutersLLM.getPromptResponse(prompt)
         possibleJsonData = responseJson['choices'][0]['message']['content'].strip().replace('\n','')
