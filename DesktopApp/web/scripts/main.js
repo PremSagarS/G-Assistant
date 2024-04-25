@@ -372,10 +372,11 @@ function displayTasks(taskLists) {
     console.log(taskLists);
     for (let i = 0; i < taskLists.length; i++) {
         let taskList = taskLists[i]['taskList']['items'];
+        let taskListTitle = taskLists[i]['title'];
         for (let j = 0; j < taskList.length; j++) {
             let taskObject = taskList[j];
             taskListsContainertemp.innerHTML += `
-                <div class="card" style="width:20rem;">
+                <div class="card" style="width:20rem;" id="${i}:${j}">
                     <div class="card-header">
                         <span style="font-weight:bold;">${taskObject['name']}</span>
                     </div>
@@ -383,13 +384,18 @@ function displayTasks(taskLists) {
                         <li class="list-group-item">Deadline Date: ${taskObject['date']}</li>
                         <li class="list-group-item">Deadline Time: ${taskObject['time'] == '' ? 'N/A' : taskObject['time']}</li>
                         <li class="list-group-item">
-                            <button class="btn btn-primary">Done</button>
+                            <button class="btn btn-primary" onclick="removeTask('${i}:${j}')">Done</button>
                         </li>
                     </ul>
                 </div>
             `;
         }
     }
+}
+
+function removeTask(idstring) {
+    let cardelement = document.getElementById(idstring);
+    cardelement.style['display'] = 'none';
 }
 
 function getAndDisplayReminders() {
