@@ -435,10 +435,6 @@ function getAndDisplayReminders() {
                         <div class="col-sm">
                             <p>Time: ${time}</p>
                         </div>
-                        <div class="col-sm">
-                            <button class="btn btn-primary">Done</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </div>
                     </div>
                 </div>
             `;
