@@ -396,6 +396,9 @@ function displayTasks(taskLists) {
 function removeTask(idstring) {
     let cardelement = document.getElementById(idstring);
     cardelement.style['display'] = 'none';
+    eel.removeTask(idstring)(function () {
+        console.log("REMOVED");
+    });
 }
 
 function getAndDisplayReminders() {

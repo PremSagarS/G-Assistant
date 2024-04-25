@@ -303,6 +303,24 @@ def getTaskLists():
     return list(returnVal)
 
 @eel.expose
+def removeTask(idString):
+    i, j = [int(k) for k in idString.split(':')]
+    
+    file = open('./web/userData/tasklists.txt', 'rb')
+    obj = pickle.load(file)
+    file.close()
+
+    del obj[i]['taskList']['items'][j]
+    if obj[i]['taskList']['items'] == []:
+        del obj[i]
+    
+    file = open('./web/userData/tasklists.txt', 'wb')
+    pickle.dump(obj, file)
+    file.close()
+
+    print(f"DELETED {i}:{j}")
+
+@eel.expose
 def getLocationLatLong(text):
     location = getJsonData(text)['location']
     data = nominatim.query(location)
