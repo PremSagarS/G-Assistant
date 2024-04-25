@@ -350,8 +350,35 @@ function createReminder(dateString, subject) {
 }
 
 function saveTaskList(subject) {
-    eel.addTaskList(subject, taskList)(function () {
-        console.log(subject, taskList);
+    let checkboxes = document.getElementsByName("taskListCheckboxes");
+    let bools = [];
+
+    for (let i = 0; i < checkboxes.length; i++) {
+        let checkbox = checkboxes[i];
+        bools.push(checkbox.checked);
+    }
+
+    let newTaskList = { 'items': [] };
+    for (let i = 0; i < taskList['items'].length; i++) {
+        if (bools[i]) {
+            newTaskList['items'].push(taskList['items'][i]);
+        }
+    }
+
+    let anyTrue = false;
+    for (let i = 0; i < bools.length; i++) {
+        anyTrue = anyTrue || bools[i];
+    }
+
+    if (anyTrue == false) {
+        console.log("NONE SELECTED");
+        return null;
+    }
+
+    console.log(newTaskList);
+
+    eel.addTaskList(subject, newTaskList)(function () {
+        console.log(subject, newTaskList);
     });
 }
 
