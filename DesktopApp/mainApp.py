@@ -453,7 +453,6 @@ def createReminder(dateString, subject):
 def addReminder(eventName, dateString):
     file1 = open("D:\\reminders.txt", "r") 
     Lines = file1.readlines()
-    print(Lines)
 
     d={}
     for i in range(len(Lines)):
@@ -469,6 +468,25 @@ def addReminder(eventName, dateString):
         file1.write(st)
         final.append({"name":i,"datestring":d[i]})
     print(final)
+    file1.close()
+
+@eel.expose
+def deleteReminder(eventname):
+    file1 = open("D:\\reminders.txt", "r")
+    Lines = file1.readlines()
+    
+    d = {}
+    for i in range(len(Lines)):
+        st=Lines[i].split()
+        d[" ".join(st[:-1])] = st[-1]
+    
+    del d[eventname]
+
+    file1 = open("D:\\reminders.txt", "w")
+    for i in d:
+        st=i+" "+d[i]+"\n"
+        file1.write(st)
+    
     file1.close()
 
 if __name__ == "__main__":

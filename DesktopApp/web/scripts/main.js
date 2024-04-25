@@ -424,7 +424,7 @@ function getAndDisplayReminders() {
                 time = "N/A";
             }
             remindersContainer.innerHTML += `
-                <div class="card">
+                <div class="card" id="${reminder[0]}">
                     <div class="row">
                         <div class="col-sm">
                             <p>${reminder[0]}</p>
@@ -435,9 +435,20 @@ function getAndDisplayReminders() {
                         <div class="col-sm">
                             <p>Time: ${time}</p>
                         </div>
+                        <div class="col-sm">
+                            <button class="btn btn-danger" onclick='deleteReminder("${reminder[0]}")'>Delete</button>
+                        </div>
                     </div>
                 </div>
             `;
         }
+    });
+}
+
+function deleteReminder(title) {
+    document.getElementById(title).style['display'] = 'none';
+
+    eel.deleteReminder(title)(function () {
+        console.log("DELETED REMINDER");
     });
 }
