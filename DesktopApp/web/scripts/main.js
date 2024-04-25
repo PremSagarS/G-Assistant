@@ -118,9 +118,6 @@ function displayMail(mailsObject) {
                 <div class="embed-responsive" style="height:50vh;">${mailBody}</div>
                 <div style="display:flex; justify-content:space-between; width:100%;">
                     <div style="display:flex;column-gap:3px;">
-                        <button class="btn btn-outline-primary" style="margin-top: 5px;">
-                            Set Reminder
-                        </button>
                         <button class="btn btn-outline-primary" style="margin-top: 5px;" onclick="openMap(${mailIndex});">
                             Maps
                         </button>
